@@ -90,7 +90,7 @@
         <div id="tab-home" class="space-y-4">
             <div class="glass-card p-4 rounded-2xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 flex items-center justify-between">
                 <div>
-                    <h2 class="font-bold text-base">Earn 0.001 TON / Task</h2>
+                    <h2 class="font-bold text-base">Earn TON / Task & Ad</h2>
                     <p class="text-xs text-slate-400">Complete tasks & watch ads to earn!</p>
                 </div>
                 <div id="ton-connect-btn"></div>
@@ -103,7 +103,7 @@
                             <i class="fas fa-play-circle"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white">Watch & Earn <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-amber-300 ml-1">Unlimited</span></h3>
+                            <h3 class="font-bold text-white">Watch & Earn</h3>
                             <p class="text-xs text-slate-400">Earn 0.001 TON per ad watched</p>
                         </div>
                     </div>
@@ -117,7 +117,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-white">Channel Tasks</h3>
-                            <p class="text-xs text-slate-400">Join channels for 0.001 TON each</p>
+                            <p class="text-xs text-slate-400">Join channels for 0.025 TON each</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
@@ -173,7 +173,7 @@
 
         <!-- TASKS TAB -->
         <div id="tab-tasks" class="space-y-3 hidden">
-            <h2 class="font-bold text-sm text-slate-300">Active Client Tasks (0.001 TON Each)</h2>
+            <h2 class="font-bold text-sm text-slate-300">Active Client Tasks (0.025 TON Each)</h2>
             <div id="tasks-list-container">
                 <p class="text-xs text-slate-400 text-center py-4">Loading tasks...</p>
             </div>
@@ -405,7 +405,7 @@
             alert("Verification successful! Welcome.");
         }
 
-        // --- Watch & Earn Logic (Unlimited Ads, No Popup) ---
+        // --- Watch & Earn Logic ---
         let adTriggered = false;
 
         function handleAction(type) {
@@ -438,7 +438,7 @@
                 total_ads: currentUser.total_ads,
                 total_tasks: currentUser.total_tasks
             });
-            alert(`Task completed successfully! Earned +${amount.toFixed(3)} TON.`);
+            alert(`Task completed successfully! Earned +${amount} TON.`);
         }
 
         function switchTab(tabName) {
@@ -521,7 +521,7 @@
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between mt-2">
                                 <div>
                                     <h4 class="text-xs font-bold text-white">Join Channel</h4>
-                                    <p class="text-[10px] text-slate-400">+0.001 TON Reward</p>
+                                    <p class="text-[10px] text-slate-400">+0.025 TON Reward</p>
                                 </div>
                                 <button onclick="completeClientTask('${task.link}')" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-medium transition">Join & Claim</button>
                             </div>
@@ -539,7 +539,7 @@
             window.open(link, '_blank');
             setTimeout(() => {
                 currentUser.total_tasks += 1;
-                addReward(0.001, 'task');
+                addReward(0.025, 'task');
                 loadTasks();
             }, 5000);
         }
@@ -586,4 +586,3 @@
     </script>
 </body>
 </html>
-                       
