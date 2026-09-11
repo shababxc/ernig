@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -33,12 +33,20 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+        /* Custom styling for TON Connect Button to match requested look */
+        #ton-connect-btn button {
+            background-color: #4f46e5 !important;
+            border-radius: 0.75rem !important;
+            padding: 8px 16px !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-24 relative">
 
     <!-- Force Subscription / Channel Verify Modal -->
-    <div id="verify-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div id="verify-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
         <div class="glass-card bg-slate-900 border border-slate-700 w-full max-w-sm p-6 rounded-2xl text-center space-y-4 shadow-2xl">
             <div class="w-16 h-16 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto text-2xl">
                 <i class="fab fa-telegram-plane"></i>
@@ -49,7 +57,7 @@
             </div>
             
             <div class="space-y-2 pt-2">
-                <a href="https://t.me/socialpulseaig" target="_blank" onclick="userClickedJoin()" class="block w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition text-sm text-white">
+                <a href="https://t.me/socialpulseaig" target="_blank" class="block w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition text-sm text-white">
                     <i class="fab fa-telegram mr-1"></i> Join Channel
                 </a>
                 <button onclick="checkSubscription()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold transition text-sm text-slate-950">
@@ -85,10 +93,10 @@
             <!-- Banner / Status Card -->
             <div class="glass-card p-4 rounded-2xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 flex items-center justify-between">
                 <div>
-                    <h2 class="font-bold text-base">Earn 0.001 TON / Task</h2>
+                    <h2 class="font-bold text-base">Earn 0.025 TON / Task</h2>
                     <p class="text-xs text-slate-400">Complete tasks & watch ads to earn!</p>
                 </div>
-                <!-- TON Connect Button Container -->
+                <!-- TON Connect Button Container (Styled as requested) -->
                 <div id="ton-connect-btn"></div>
             </div>
 
@@ -100,8 +108,8 @@
                             <i class="fas fa-play-circle"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white">Watch & Earn</h3>
-                            <p class="text-xs text-slate-400">Earn 0.001 TON per ad watched</p>
+                            <h3 class="font-bold text-white">Watch & Earn <span id="ad-limit-counter" class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-amber-300 ml-1">Daily: 0/10</span></h3>
+                            <p class="text-xs text-slate-400">Earn 0.025 TON per ad watched (Max 10/day)</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
@@ -114,7 +122,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-white">Channel Tasks</h3>
-                            <p class="text-xs text-slate-400">Join client channels for 0.001 TON each</p>
+                            <p class="text-xs text-slate-400">Join channels for 0.025 TON each</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
@@ -140,10 +148,10 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-emerald-300">Withdraw Funds</h3>
-                            <p class="text-xs text-slate-400">Min. 1.0 TON required</p>
+                            <p class="text-xs text-slate-400">Min 1 TON, 40 Ads & 40 Tasks required</p>
                         </div>
                     </div>
-                    <span class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-md">Min 1 TON</span>
+                    <span class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-md">Rules</span>
                 </button>
             </div>
         </div>
@@ -161,14 +169,16 @@
                 <div class="bg-slate-800/60 p-3 rounded-xl text-left space-y-2 text-xs">
                     <div class="flex justify-between"><span class="text-slate-400">Telegram ID:</span> <span id="profile-id" class="font-mono text-indigo-300">---</span></div>
                     <div class="flex justify-between"><span class="text-slate-400">Total Balance:</span> <span id="profile-balance" class="font-bold text-amber-400">0.000 TON</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Ads Watched:</span> <span id="profile-ads-count" class="font-bold text-blue-400">0 / 40</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Tasks Completed:</span> <span id="profile-tasks-count" class="font-bold text-purple-400">0 / 40</span></div>
                     <div class="flex justify-between"><span class="text-slate-400">Connected Wallet:</span> <span id="profile-wallet-address" class="font-mono text-emerald-400">Not Connected</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- TASKS TAB (Auto Updated) -->
+        <!-- TASKS TAB -->
         <div id="tab-tasks" class="space-y-3 hidden">
-            <h2 class="font-bold text-sm text-slate-300">Active Client Tasks</h2>
+            <h2 class="font-bold text-sm text-slate-300">Active Client Tasks (0.025 TON Each)</h2>
             <div id="tasks-list-container">
                 <p class="text-xs text-slate-400 text-center py-4">Loading tasks...</p>
             </div>
@@ -178,7 +188,7 @@
         <div id="tab-referral" class="space-y-4 hidden">
             <div class="glass-card p-5 rounded-2xl text-center space-y-3">
                 <h3 class="font-bold text-base text-indigo-300">Invite Friends & Earn</h3>
-                <p class="text-xs text-slate-400">Get 0.020 TON for every active friend you invite!</p>
+                <p class="text-xs text-slate-400">Get 0.050 TON for every active friend you invite!</p>
                 <div class="bg-slate-800 p-3 rounded-xl text-xs text-slate-300 font-mono break-all" id="ref-link">
                     https://t.me/socialpulseaig?start=ref_12345
                 </div>
@@ -229,9 +239,10 @@
                 <button onclick="closeWithdrawModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
             <div class="space-y-3">
-                <div>
-                    <label class="text-xs text-slate-400 block mb-1">Your Available Balance</label>
-                    <div class="bg-slate-800 p-2.5 rounded-xl text-sm font-semibold text-amber-400" id="modal-user-balance">0.000 TON</div>
+                <div class="bg-slate-800/80 p-3 rounded-xl space-y-1 text-xs">
+                    <div class="flex justify-between text-slate-300"><span>Balance:</span> <span id="modal-user-balance" class="text-amber-400 font-bold">0.000 TON</span></div>
+                    <div class="flex justify-between text-slate-300"><span>Ads Watched:</span> <span id="modal-ads-count" class="text-blue-400 font-bold">0 / 40</span></div>
+                    <div class="flex justify-between text-slate-300"><span>Tasks Completed:</span> <span id="modal-tasks-count" class="text-purple-400 font-bold">0 / 40</span></div>
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Amount to Withdraw (TON)</label>
@@ -297,6 +308,8 @@
             username: "guest",
             photo_url: "",
             balance: 0.000,
+            total_ads: 0,
+            total_tasks: 0,
             wallet: ""
         };
 
@@ -308,7 +321,7 @@
             currentUser.photo_url = user.photo_url || "";
         }
 
-        // Initialize TON Connect UI (Updated with your Vercel Manifest Link)
+        // Initialize TON Connect UI (Button text customized via text customization or CSS)
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://ernig-pearl.vercel.app/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-btn'
@@ -351,9 +364,12 @@
             const userRef = db.ref('users/' + currentUser.id);
             userRef.once('value').then((snapshot) => {
                 if (snapshot.exists()) {
-                    currentUser.balance = snapshot.val().balance || 0.000;
-                    if(snapshot.val().wallet) {
-                        currentUser.wallet = snapshot.val().wallet;
+                    let data = snapshot.val();
+                    currentUser.balance = data.balance || 0.000;
+                    currentUser.total_ads = data.total_ads || 0;
+                    currentUser.total_tasks = data.total_tasks || 0;
+                    if(data.wallet) {
+                        currentUser.wallet = data.wallet;
                         document.getElementById('withdraw-wallet').value = currentUser.wallet;
                         document.getElementById('profile-wallet-address').innerText = currentUser.wallet.slice(0, 4) + '...' + currentUser.wallet.slice(-4);
                     }
@@ -363,53 +379,104 @@
                         username: currentUser.username,
                         photo_url: currentUser.photo_url,
                         balance: 0.000,
+                        total_ads: 0,
+                        total_tasks: 0,
                         wallet: "",
                         joined_at: Date.now()
                     });
                 }
-                updateBalanceUI();
+                updateUIStats();
             });
             
-            // Load Campaigns into Tasks
+            checkDailyAdLimitUI();
             loadTasks();
         }
 
-        function updateBalanceUI() {
+        function updateUIStats() {
             const formattedBal = currentUser.balance.toFixed(3);
             document.getElementById('user-balance').innerText = formattedBal;
-            document.getElementById('modal-user-balance').innerText = formattedBal + " TON";
             document.getElementById('profile-balance').innerText = formattedBal + " TON";
+            document.getElementById('modal-user-balance').innerText = formattedBal + " TON";
+            
+            document.getElementById('profile-ads-count').innerText = `${currentUser.total_ads} / 40`;
+            document.getElementById('profile-tasks-count').innerText = `${currentUser.total_tasks} / 40`;
+            document.getElementById('modal-ads-count').innerText = `${currentUser.total_ads} / 40`;
+            document.getElementById('modal-tasks-count').innerText = `${currentUser.total_tasks} / 40`;
         }
 
-        let hasJoinedChannel = false;
-        function userClickedJoin() { hasJoinedChannel = true; }
-
+        // --- Channel Verification Logic ---
         function checkSubscription() {
-            if(!hasJoinedChannel) {
-                alert("Please click 'Join Channel' first and join the channel!");
-                return;
-            }
+            localStorage.setItem('channel_verified', 'true');
             document.getElementById('verify-modal').classList.add('hidden');
             alert("Verification successful! Welcome.");
         }
 
-        // Updated Reward: 0.001 TON
+        // --- Daily Ad Limit & Watch Logic ---
+        function getDailyAdCount() {
+            const today = new Date().toDateString();
+            let lastDate = localStorage.getItem('ad_date');
+            let count = parseInt(localStorage.getItem('ad_count')) || 0;
+            if (lastDate !== today) {
+                count = 0;
+                localStorage.setItem('ad_date', today);
+                localStorage.setItem('ad_count', count);
+            }
+            return count;
+        }
+
+        function incrementDailyAdCount() {
+            const today = new Date().toDateString();
+            let count = getDailyAdCount() + 1;
+            localStorage.setItem('ad_date', today);
+            localStorage.setItem('ad_count', count);
+            checkDailyAdLimitUI();
+        }
+
+        function checkDailyAdLimitUI() {
+            let count = getDailyAdCount();
+            document.getElementById('ad-limit-counter').innerText = `Daily: ${count}/10`;
+        }
+
+        let adTriggered = false;
+
         function handleAction(type) {
             if(type === 'watch_ad') {
-                if (typeof show_11759773 === 'function') {
-                    show_11759773().then(() => { addReward(0.001); }).catch(() => { addReward(0.001); });
-                } else {
-                    addReward(0.001);
+                let currentDailyAds = getDailyAdCount();
+                if(currentDailyAds >= 10) {
+                    alert("Daily ad viewing limit reached! You can watch a maximum of 10 ads per day. Come back tomorrow.");
+                    return;
                 }
+
+                adTriggered = true;
+                if (typeof show_11759773 === 'function') {
+                    show_11759773().catch(() => {});
+                }
+                alert("Please view/interact with the ad and return back after 2-3 seconds to claim your reward!");
             } else {
                 alert("Feature coming soon!");
             }
         }
 
-        function addReward(amount) {
+        // When user returns back to the mini app tab after viewing the ad
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "visible" && adTriggered) {
+                adTriggered = false;
+                setTimeout(() => {
+                    incrementDailyAdCount();
+                    currentUser.total_ads += 1;
+                    addReward(0.025, 'ad');
+                }, 2500);
+            }
+        });
+
+        function addReward(amount, type) {
             currentUser.balance += amount;
-            updateBalanceUI();
-            db.ref('users/' + currentUser.id).update({ balance: currentUser.balance });
+            updateUIStats();
+            db.ref('users/' + currentUser.id).update({ 
+                balance: currentUser.balance,
+                total_ads: currentUser.total_ads,
+                total_tasks: currentUser.total_tasks
+            });
             alert(`Task completed successfully! Earned +${amount.toFixed(3)} TON.`);
         }
 
@@ -435,22 +502,21 @@
             document.getElementById('camp-cost').innerText = cost.toFixed(1) + " TON";
         }
 
-        // Send Transaction and Publish Campaign Auto to Tasks
         async function payAndPublishCampaign() {
             const link = document.getElementById('camp-link').value;
             const duration = document.getElementById('camp-duration').value;
             
             if(!link) { alert("Please enter your channel link!"); return; }
             if(!tonConnectUI.connected) {
-                alert("Please connect your TON wallet first using the 'Connect Wallet' button on the Home screen!");
+                alert("Please connect your TON wallet first using the 'Connect TON' button on the Home screen!");
                 return;
             }
 
             let cost = duration == "48" ? 1.0 : 3.5;
-            let costNano = cost * 1000000000; // TON to nanoTON conversion
+            let costNano = cost * 1000000000;
 
             const transaction = {
-                validUntil: Math.floor(Date.now() / 1000) + 300, // 5 minutes validity
+                validUntil: Math.floor(Date.now() / 1000) + 300,
                 messages: [
                     {
                         address: ADMIN_TON_ADDRESS,
@@ -460,10 +526,8 @@
             };
 
             try {
-                // This triggers the wallet popup window exactly like your screenshot
                 const result = await tonConnectUI.sendTransaction(transaction);
                 
-                // If successful, save campaign to database
                 db.ref('campaigns').push({ 
                     user_id: currentUser.id, 
                     link: link, 
@@ -474,7 +538,7 @@
                 
                 closeCampaignModal();
                 alert("Payment successful! Your campaign has been automatically published to the Tasks section.");
-                loadTasks(); // Refresh tasks automatically
+                loadTasks();
                 
             } catch (error) {
                 console.error(error);
@@ -482,7 +546,6 @@
             }
         }
 
-        // Load active campaigns for users to complete
         function loadTasks() {
             const container = document.getElementById('tasks-list-container');
             db.ref('campaigns').once('value').then(snapshot => {
@@ -497,7 +560,7 @@
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between mt-2">
                                 <div>
                                     <h4 class="text-xs font-bold text-white">Join Channel</h4>
-                                    <p class="text-[10px] text-slate-400">+0.001 TON Reward</p>
+                                    <p class="text-[10px] text-slate-400">+0.025 TON Reward</p>
                                 </div>
                                 <button onclick="completeClientTask('${task.link}')" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-medium transition">Join & Claim</button>
                             </div>
@@ -511,12 +574,12 @@
             });
         }
 
-        // Complete user task
         function completeClientTask(link) {
             window.open(link, '_blank');
-            // Give user time to join the channel before rewarding
             setTimeout(() => {
-                addReward(0.001);
+                currentUser.total_tasks += 1;
+                addReward(0.025, 'task');
+                loadTasks();
             }, 5000);
         }
 
@@ -526,13 +589,21 @@
         function submitWithdrawRequest() {
             const amount = parseFloat(document.getElementById('withdraw-amount').value);
             const wallet = document.getElementById('withdraw-wallet').value;
+            
+            // Checking requirements: Min 1.0 TON, Min 40 Ads, Min 40 Tasks
+            if (currentUser.balance < 1.0 || currentUser.total_ads < 40 || currentUser.total_tasks < 40) {
+                alert(`Withdrawal requirements not met!\n\n- Balance required: Min 1.0 TON (Current: ${currentUser.balance.toFixed(3)})\n- Ads watched required: 40 (Current: ${currentUser.total_ads})\n- Tasks completed required: 40 (Current: ${currentUser.total_tasks})`);
+                return;
+            }
+
             if(!amount || !wallet || amount < 1.0 || amount > currentUser.balance) {
                 alert("Invalid amount or insufficient balance! Minimum withdrawal is 1.0 TON.");
                 return;
             }
+
             db.ref('withdrawals').push({ user_id: currentUser.id, amount: amount, wallet: wallet, status: "Pending", timestamp: Date.now() });
             currentUser.balance -= amount;
-            updateBalanceUI();
+            updateUIStats();
             db.ref('users/' + currentUser.id).update({ balance: currentUser.balance });
             closeWithdrawModal();
             alert("Withdrawal request submitted successfully!");
@@ -545,8 +616,14 @@
         }
 
         window.onload = function() {
+            if (localStorage.getItem('channel_verified') === 'true') {
+                document.getElementById('verify-modal').classList.add('hidden');
+            } else {
+                document.getElementById('verify-modal').classList.remove('hidden');
+            }
             initUserData();
         };
     </script>
 </body>
 </html>
+    
