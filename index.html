@@ -245,14 +245,10 @@
     </div>
   </div>
 
-  <!-- Firebase Database & Application Script -->
+  <!-- Firebase Realtime Database SDK & Main Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    const BOT_USERNAME = "Social_Pulse_earnBot"; 
-    const CHANNEL_USERNAME = "@socialpulseaig"; 
-    const BOT_TOKEN = "8731863495:AAEy2Z-QyUzpUqfaJH3EUpO7bPBJ_ol4Yq0"; 
 
     const firebaseConfig = {
       apiKey: "AIzaSyCizaCuNkTOsdyeLErVsUzjTj6P0Du6zZw",
@@ -267,11 +263,17 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.expand();
 
-    const user = tg.initDataUnsafe?.user || { id: 12345678, first_name: "Demo User" };
-    const startParam = tg.initDataUnsafe?.start_param;
+    const user = tg?.initDataUnsafe?.user || { id: 12345678, first_name: "Demo User" };
+    // Start parameter format handling for bot referral links
+    const startParam = tg?.initDataUnsafe?.start_param;
+
+    // Corrected Bot Username and Configuration Options
+    const BOT_USERNAME = "Social_Pulse_earnBot"; 
+    const CHANNEL_USERNAME = "@socialpulseaig"; 
+    const BOT_TOKEN = "8731863495:AAEy2Z-QyUzpUqfaJH3EUpO7bPBJ_ol4Yq0"; 
 
     document.getElementById('user-name').innerText = user.first_name || "User";
     document.getElementById('user-avatar').innerText = (user.first_name || "U").charAt(0);
@@ -283,6 +285,7 @@
       try {
         const snap = await get(userRef);
         if (!snap.exists()) {
+          // Create new user entry
           await set(userRef, {
             coins: 0,
             adsWatched: 0,
@@ -291,7 +294,8 @@
             createdAt: new Date().toISOString()
           });
 
-          if (startParam && startParam != user.id) {
+          // Handle Referral Logic for Referrer
+          if (startParam && String(startParam) !== String(user.id)) {
             const referrerRef = ref(db, 'users/' + startParam);
             const refSnap = await get(referrerRef);
             if (refSnap.exists()) {
@@ -328,9 +332,13 @@
       }
     }
 
-    // Explicitly attaching logic to window scope so HTML buttons function seamlessly
     window.joinChannel = function() {
-      tg.openTelegramLink(`https://t.me/${CHANNEL_USERNAME.replace('@','')}`);
+      const cleanChannel = CHANNEL_USERNAME.replace('@','');
+      if (tg && tg.openTelegramLink) {
+        tg.openTelegramLink(`https://t.me/${cleanChannel}`);
+      } else {
+        window.open(`https://t.me/${cleanChannel}`, '_blank');
+      }
     };
 
     window.verifyJoin = async function() {
@@ -338,31 +346,18 @@
       verifyBtn.innerText = "Verifying...";
       verifyBtn.disabled = true;
 
-      const channelHandle = CHANNEL_USERNAME.startsWith('@') ? CHANNEL_USERNAME : `@${CHANNEL_USERNAME}`;
-      const telegramApiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${channelHandle}&user_id=${user.id}`;
-
       try {
-        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(telegramApiUrl)}`);
-        const jsonRes = await res.json();
-        const data = typeof jsonRes.contents === 'string' ? JSON.parse(jsonRes.contents) : jsonRes.contents;
-
-        if (data && data.ok && ['member', 'administrator', 'creator'].includes(data.result?.status)) {
+        const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${CHANNEL_USERNAME}&user_id=${user.id}`);
+        const data = await res.json();
+        
+        if (data.ok && ['member', 'administrator', 'creator'].includes(data.result?.status)) {
           document.getElementById('join-modal').style.display = 'none';
         } else {
-          alert("Verification Failed! Make sure you have joined the channel before clicking verify.");
+          alert("Verification Failed! You have not joined the channel yet.");
         }
       } catch (err) {
-        console.error("Primary Proxy Failed, trying backup:", err);
-        try {
-          const backupRes = await fetch(`https://corsproxy.io/?${encodeURIComponent(telegramApiUrl)}`);
-          const backupData = await backupRes.json();
-          if (backupData && backupData.ok && ['member', 'administrator', 'creator'].includes(backupData.result?.status)) {
-            document.getElementById('join-modal').style.display = 'none';
-            return;
-          }
-        } catch(e) {}
-
-        alert("Verification Error! Please try again in a few seconds.");
+        console.error("API Verification Error:", err);
+        alert("Verification Failed! Please try again.");
       } finally {
         verifyBtn.innerText = "2. I Have Joined (Verify)";
         verifyBtn.disabled = false;
@@ -372,8 +367,12 @@
     window.watchAd = function() {
       if (typeof show_11759773 === 'function') {
         show_11759773()
-          .then(() => rewardUser())
-          .catch(() => alert("You must watch the full ad to earn 10 coins!"));
+          .then(() => {
+            rewardUser();
+          })
+          .catch(() => {
+            alert("You must watch the full ad to earn 10 coins!");
+          });
       } else {
         alert("Ad Network loading. Please try again in 5 seconds.");
       }
@@ -424,12 +423,16 @@
       }
     };
 
+    // Standard Direct Bot Referral Sharing Link
     window.shareReferral = function() {
-      const shareText = "Join this mini app and earn money daily!";
       const directBotUrl = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(directBotUrl)}&text=${encodeURIComponent(shareText)}`;
+      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(directBotUrl)}&text=${encodeURIComponent("Join this mini app and earn money daily!")}`;
       
-      tg.openTelegramLink(shareUrl);
+      if (tg && tg.openTelegramLink) {
+        tg.openTelegramLink(shareUrl);
+      } else {
+        window.open(shareUrl, '_blank');
+      }
     };
 
     window.switchTab = function(tabName, element) {
@@ -456,3 +459,4 @@
   </script>
 </body>
 </html>
+
