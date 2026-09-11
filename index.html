@@ -245,7 +245,7 @@
     </div>
   </div>
 
-  <!-- Firebase Realtime Database SDK & Logic -->
+  <!-- Firebase Database & Application Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -305,7 +305,7 @@
         }
         await updateUI();
       } catch (err) {
-        console.error("Firebase Error:", err);
+        console.error("Firebase Initialization Error:", err);
       }
     }
 
@@ -324,10 +324,11 @@
           document.getElementById('stat-ref').innerText = data.referrals || 0;
         }
       } catch (err) {
-        console.error("UI Error:", err);
+        console.error("UI Update Error:", err);
       }
     }
 
+    // Explicitly attaching logic to window scope so HTML buttons function seamlessly
     window.joinChannel = function() {
       tg.openTelegramLink(`https://t.me/${CHANNEL_USERNAME.replace('@','')}`);
     };
@@ -337,24 +338,23 @@
       verifyBtn.innerText = "Verifying...";
       verifyBtn.disabled = true;
 
-      const cleanChannel = CHANNEL_USERNAME.startsWith('@') ? CHANNEL_USERNAME : `@${CHANNEL_USERNAME}`;
-      const apiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${cleanChannel}&user_id=${user.id}`;
+      const channelHandle = CHANNEL_USERNAME.startsWith('@') ? CHANNEL_USERNAME : `@${CHANNEL_USERNAME}`;
+      const telegramApiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${channelHandle}&user_id=${user.id}`;
 
       try {
-        // High-reliability Proxy Engine
-        const response = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`);
-        const data = await response.json();
+        const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(telegramApiUrl)}`);
+        const jsonRes = await res.json();
+        const data = typeof jsonRes.contents === 'string' ? JSON.parse(jsonRes.contents) : jsonRes.contents;
 
         if (data && data.ok && ['member', 'administrator', 'creator'].includes(data.result?.status)) {
           document.getElementById('join-modal').style.display = 'none';
         } else {
-          alert("Verification Failed! Please ensure you have actually joined the channel.");
+          alert("Verification Failed! Make sure you have joined the channel before clicking verify.");
         }
       } catch (err) {
-        console.error("Verification Error:", err);
-        // Backup Attempt using corsproxy
+        console.error("Primary Proxy Failed, trying backup:", err);
         try {
-          const backupRes = await fetch(`https://corsproxy.io/?${encodeURIComponent(apiUrl)}`);
+          const backupRes = await fetch(`https://corsproxy.io/?${encodeURIComponent(telegramApiUrl)}`);
           const backupData = await backupRes.json();
           if (backupData && backupData.ok && ['member', 'administrator', 'creator'].includes(backupData.result?.status)) {
             document.getElementById('join-modal').style.display = 'none';
@@ -362,7 +362,7 @@
           }
         } catch(e) {}
 
-        alert("Network error! Please try again in 5 seconds.");
+        alert("Verification Error! Please try again in a few seconds.");
       } finally {
         verifyBtn.innerText = "2. I Have Joined (Verify)";
         verifyBtn.disabled = false;
