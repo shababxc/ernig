@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -33,7 +33,6 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        /* Custom styling for TON Connect Button to match requested look */
         #ton-connect-btn button {
             background-color: #4f46e5 !important;
             border-radius: 0.75rem !important;
@@ -78,7 +77,6 @@
                 <span class="text-xs text-emerald-400 flex items-center"><i class="fas fa-circle text-[8px] mr-1"></i> <span id="wallet-label-status">Wallet Not Connected</span></span>
             </div>
         </div>
-        <!-- TON Original Logo with Balance -->
         <div class="glass-card px-4 py-1.5 rounded-full flex items-center space-x-2">
             <img src="https://cryptologos.cc/logos/toncoin-ton-logo.svg?v=035" alt="TON" class="w-5 h-5">
             <span class="font-bold text-lg" id="user-balance">0.000</span> <span class="text-xs text-slate-400">TON</span>
@@ -90,17 +88,14 @@
         
         <!-- HOME TAB -->
         <div id="tab-home" class="space-y-4">
-            <!-- Banner / Status Card -->
             <div class="glass-card p-4 rounded-2xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 flex items-center justify-between">
                 <div>
-                    <h2 class="font-bold text-base">Earn 0.025 TON / Task</h2>
+                    <h2 class="font-bold text-base">Earn 0.001 TON / Task</h2>
                     <p class="text-xs text-slate-400">Complete tasks & watch ads to earn!</p>
                 </div>
-                <!-- TON Connect Button Container (Styled as requested) -->
                 <div id="ton-connect-btn"></div>
             </div>
 
-            <!-- Dashboard Buttons -->
             <div class="grid grid-cols-1 gap-3.5">
                 <button onclick="handleAction('watch_ad')" class="glass-card p-4 rounded-2xl flex items-center justify-between hover:bg-white/10 transition group text-left">
                     <div class="flex items-center space-x-4">
@@ -108,8 +103,8 @@
                             <i class="fas fa-play-circle"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white">Watch & Earn <span id="ad-limit-counter" class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-amber-300 ml-1">Daily: 0/10</span></h3>
-                            <p class="text-xs text-slate-400">Earn 0.025 TON per ad watched (Max 10/day)</p>
+                            <h3 class="font-bold text-white">Watch & Earn <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-amber-300 ml-1">Unlimited</span></h3>
+                            <p class="text-xs text-slate-400">Earn 0.001 TON per ad watched</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
@@ -122,7 +117,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-white">Channel Tasks</h3>
-                            <p class="text-xs text-slate-400">Join channels for 0.025 TON each</p>
+                            <p class="text-xs text-slate-400">Join channels for 0.001 TON each</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
@@ -178,7 +173,7 @@
 
         <!-- TASKS TAB -->
         <div id="tab-tasks" class="space-y-3 hidden">
-            <h2 class="font-bold text-sm text-slate-300">Active Client Tasks (0.025 TON Each)</h2>
+            <h2 class="font-bold text-sm text-slate-300">Active Client Tasks (0.001 TON Each)</h2>
             <div id="tasks-list-container">
                 <p class="text-xs text-slate-400 text-center py-4">Loading tasks...</p>
             </div>
@@ -188,7 +183,7 @@
         <div id="tab-referral" class="space-y-4 hidden">
             <div class="glass-card p-5 rounded-2xl text-center space-y-3">
                 <h3 class="font-bold text-base text-indigo-300">Invite Friends & Earn</h3>
-                <p class="text-xs text-slate-400">Get 0.050 TON for every active friend you invite!</p>
+                <p class="text-xs text-slate-400">Get 0.005 TON for every active friend you invite!</p>
                 <div class="bg-slate-800 p-3 rounded-xl text-xs text-slate-300 font-mono break-all" id="ref-link">
                     https://t.me/socialpulseaig?start=ref_12345
                 </div>
@@ -246,7 +241,7 @@
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Amount to Withdraw (TON)</label>
-                    <input type="number" step="0.010" id="withdraw-amount" placeholder="Min 1.0 TON" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <input type="number" step="0.001" id="withdraw-amount" placeholder="Min 1.0 TON" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Your TON Wallet Address</label>
@@ -295,7 +290,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Admin Wallet for receiving Campaign payments
+        // Admin Binance TON Wallet Address for Campaign payments
         const ADMIN_TON_ADDRESS = "UQC_uwp-fGIO5qwRgGKe0ymORn-Cd-pW_HtBVbHD-NPzIVfq";
 
         // Telegram WebApp User Setup
@@ -321,7 +316,7 @@
             currentUser.photo_url = user.photo_url || "";
         }
 
-        // Initialize TON Connect UI (Button text customized via text customization or CSS)
+        // Initialize TON Connect UI
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://ernig-pearl.vercel.app/tonconnect-manifest.json',
             buttonRootId: 'ton-connect-btn'
@@ -388,7 +383,6 @@
                 updateUIStats();
             });
             
-            checkDailyAdLimitUI();
             loadTasks();
         }
 
@@ -411,47 +405,15 @@
             alert("Verification successful! Welcome.");
         }
 
-        // --- Daily Ad Limit & Watch Logic ---
-        function getDailyAdCount() {
-            const today = new Date().toDateString();
-            let lastDate = localStorage.getItem('ad_date');
-            let count = parseInt(localStorage.getItem('ad_count')) || 0;
-            if (lastDate !== today) {
-                count = 0;
-                localStorage.setItem('ad_date', today);
-                localStorage.setItem('ad_count', count);
-            }
-            return count;
-        }
-
-        function incrementDailyAdCount() {
-            const today = new Date().toDateString();
-            let count = getDailyAdCount() + 1;
-            localStorage.setItem('ad_date', today);
-            localStorage.setItem('ad_count', count);
-            checkDailyAdLimitUI();
-        }
-
-        function checkDailyAdLimitUI() {
-            let count = getDailyAdCount();
-            document.getElementById('ad-limit-counter').innerText = `Daily: ${count}/10`;
-        }
-
+        // --- Watch & Earn Logic (Unlimited Ads, No Popup) ---
         let adTriggered = false;
 
         function handleAction(type) {
             if(type === 'watch_ad') {
-                let currentDailyAds = getDailyAdCount();
-                if(currentDailyAds >= 10) {
-                    alert("Daily ad viewing limit reached! You can watch a maximum of 10 ads per day. Come back tomorrow.");
-                    return;
-                }
-
                 adTriggered = true;
                 if (typeof show_11759773 === 'function') {
                     show_11759773().catch(() => {});
                 }
-                alert("Please view/interact with the ad and return back after 2-3 seconds to claim your reward!");
             } else {
                 alert("Feature coming soon!");
             }
@@ -462,9 +424,8 @@
             if (document.visibilityState === "visible" && adTriggered) {
                 adTriggered = false;
                 setTimeout(() => {
-                    incrementDailyAdCount();
                     currentUser.total_ads += 1;
-                    addReward(0.025, 'ad');
+                    addReward(0.001, 'ad');
                 }, 2500);
             }
         });
@@ -560,7 +521,7 @@
                             <div class="glass-card p-4 rounded-xl flex items-center justify-between mt-2">
                                 <div>
                                     <h4 class="text-xs font-bold text-white">Join Channel</h4>
-                                    <p class="text-[10px] text-slate-400">+0.025 TON Reward</p>
+                                    <p class="text-[10px] text-slate-400">+0.001 TON Reward</p>
                                 </div>
                                 <button onclick="completeClientTask('${task.link}')" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-medium transition">Join & Claim</button>
                             </div>
@@ -578,7 +539,7 @@
             window.open(link, '_blank');
             setTimeout(() => {
                 currentUser.total_tasks += 1;
-                addReward(0.025, 'task');
+                addReward(0.001, 'task');
                 loadTasks();
             }, 5000);
         }
@@ -590,7 +551,6 @@
             const amount = parseFloat(document.getElementById('withdraw-amount').value);
             const wallet = document.getElementById('withdraw-wallet').value;
             
-            // Checking requirements: Min 1.0 TON, Min 40 Ads, Min 40 Tasks
             if (currentUser.balance < 1.0 || currentUser.total_ads < 40 || currentUser.total_tasks < 40) {
                 alert(`Withdrawal requirements not met!\n\n- Balance required: Min 1.0 TON (Current: ${currentUser.balance.toFixed(3)})\n- Ads watched required: 40 (Current: ${currentUser.total_ads})\n- Tasks completed required: 40 (Current: ${currentUser.total_tasks})`);
                 return;
@@ -626,4 +586,4 @@
     </script>
 </body>
 </html>
-    
+                       
