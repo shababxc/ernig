@@ -184,7 +184,7 @@
       <div class="card">
         <h3>Invite Friends</h3>
         <p style="color: var(--text-dim); font-size: 14px; margin-bottom: 15px;">Earn 50 bonus coins for every friend who joins using your link!</p>
-        <button class="btn" style="background: #22c55e;" onclick="window.shareReferral()">Invite Friends</button>
+        <button class="btn" style="background: #22c55e; margin-bottom: 10px;" onclick="window.shareReferral()">Share Referral Link</button>
       </div>
     </div>
 
@@ -267,10 +267,8 @@
     if (tg) tg.expand();
 
     const user = tg?.initDataUnsafe?.user || { id: 12345678, first_name: "Demo User" };
-    // Start parameter format handling for bot referral links
     const startParam = tg?.initDataUnsafe?.start_param;
 
-    // Corrected Bot Username and Configuration Options
     const BOT_USERNAME = "Social_Pulse_earnBot"; 
     const CHANNEL_USERNAME = "@socialpulseaig"; 
     const BOT_TOKEN = "8731863495:AAEy2Z-QyUzpUqfaJH3EUpO7bPBJ_ol4Yq0"; 
@@ -423,10 +421,10 @@
       }
     };
 
-    // Standard Direct Bot Referral Sharing Link
+    // Updated Mini App Referral Sharing Link (using short name 'open')
     window.shareReferral = function() {
-      const directBotUrl = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
-      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(directBotUrl)}&text=${encodeURIComponent("Join this mini app and earn money daily!")}`;
+      const referralLink = `https://t.me/${BOT_USERNAME}/open?startapp=${user.id}`;
+      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent("Join this mini app and earn money daily!")}`;
       
       if (tg && tg.openTelegramLink) {
         tg.openTelegramLink(shareUrl);
@@ -459,4 +457,3 @@
   </script>
 </body>
 </html>
-
