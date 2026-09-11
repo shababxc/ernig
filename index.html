@@ -12,6 +12,9 @@
     <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+    <!-- TON Connect UI SDK -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+
     <!-- Monetag SDK -->
     <script src='//libtl.com/sdk.js' data-zone='11759773' data-sdk='show_11759773'></script>
 
@@ -42,25 +45,23 @@
             </div>
             <div>
                 <h3 class="font-bold text-lg text-white">Join Our Channel First!</h3>
-                <p class="text-xs text-slate-400 mt-1">To use this app and start earning 0.025 TON per task, you must join our official Telegram channel.</p>
+                <p class="text-xs text-slate-400 mt-1">To use this app and start earning, you must join our official Telegram channel.</p>
             </div>
             
             <div class="space-y-2 pt-2">
-                <a href="https://t.me/your_channel_username" target="_blank" onclick="userClickedJoin()" class="block w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition text-sm text-white">
+                <a href="https://t.me/socialpulseaig" target="_blank" onclick="userClickedJoin()" class="block w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition text-sm text-white">
                     <i class="fab fa-telegram mr-1"></i> Join Channel
                 </a>
                 <button onclick="checkSubscription()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold transition text-sm text-slate-950">
                     <i class="fas fa-check-circle mr-1"></i> Verify Membership
                 </button>
             </div>
-            <p class="text-[10px] text-slate-500">You must join and click verify to unlock the app.</p>
         </div>
     </div>
 
     <!-- Top Header & Balance Section -->
     <header class="p-4 flex items-center justify-between border-b border-slate-800">
         <div class="flex items-center space-x-3">
-            <!-- Telegram User Profile Picture Container -->
             <div id="user-avatar-container" class="w-11 h-11 rounded-full overflow-hidden bg-indigo-600 flex items-center justify-center font-bold text-lg border-2 border-indigo-400/40 shadow-md">
                 <span id="user-initial">U</span>
             </div>
@@ -69,8 +70,9 @@
                 <span class="text-xs text-emerald-400 flex items-center"><i class="fas fa-circle text-[8px] mr-1"></i> <span id="wallet-label-status">Wallet Not Connected</span></span>
             </div>
         </div>
+        <!-- TON Original Logo with Balance -->
         <div class="glass-card px-4 py-1.5 rounded-full flex items-center space-x-2">
-            <i class="fas fa-coins text-amber-400"></i>
+            <img src="https://cryptologos.cc/logos/toncoin-ton-logo.svg?v=035" alt="TON" class="w-5 h-5">
             <span class="font-bold text-lg" id="user-balance">0.000</span> <span class="text-xs text-slate-400">TON</span>
         </div>
     </header>
@@ -83,13 +85,11 @@
             <!-- Banner / Status Card -->
             <div class="glass-card p-4 rounded-2xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 flex items-center justify-between">
                 <div>
-                    <h2 class="font-bold text-base">Earn 0.025 TON / Task</h2>
+                    <h2 class="font-bold text-base">Earn 0.010 TON / Task</h2>
                     <p class="text-xs text-slate-400">Complete tasks & watch ads to earn!</p>
                 </div>
-                <button onclick="connectWallet()" id="connect-wallet-btn" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-2 rounded-xl font-medium transition flex items-center space-x-1">
-                    <i class="fas fa-wallet"></i>
-                    <span id="wallet-status">Connect TON</span>
-                </button>
+                <!-- TON Connect Button Container -->
+                <div id="ton-connect-btn"></div>
             </div>
 
             <!-- Dashboard Buttons -->
@@ -101,7 +101,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-white">Watch & Earn</h3>
-                            <p class="text-xs text-slate-400">Earn 0.025 TON per ad watched</p>
+                            <p class="text-xs text-slate-400">Earn 0.010 TON per ad watched</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
@@ -114,7 +114,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-white">Channel Tasks</h3>
-                            <p class="text-xs text-slate-400">Join channels for 0.025 TON each</p>
+                            <p class="text-xs text-slate-400">Join channels for 0.010 TON each</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
@@ -148,7 +148,7 @@
             </div>
         </div>
 
-        <!-- PROFILE TAB (Telegram User Details Display) -->
+        <!-- PROFILE TAB -->
         <div id="tab-profile" class="space-y-4 hidden">
             <div class="glass-card p-6 rounded-2xl text-center space-y-3">
                 <div id="profile-avatar-large" class="w-20 h-20 rounded-full overflow-hidden bg-indigo-600 mx-auto flex items-center justify-center text-2xl font-bold border-2 border-indigo-400 shadow-xl">
@@ -161,7 +161,7 @@
                 <div class="bg-slate-800/60 p-3 rounded-xl text-left space-y-2 text-xs">
                     <div class="flex justify-between"><span class="text-slate-400">Telegram ID:</span> <span id="profile-id" class="font-mono text-indigo-300">---</span></div>
                     <div class="flex justify-between"><span class="text-slate-400">Total Balance:</span> <span id="profile-balance" class="font-bold text-amber-400">0.000 TON</span></div>
-                    <div class="flex justify-between"><span class="text-slate-400">Account Status:</span> <span class="text-emerald-400 font-semibold">Active / Verified</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Connected Wallet:</span> <span id="profile-wallet-address" class="font-mono text-emerald-400">Not Connected</span></div>
                 </div>
             </div>
         </div>
@@ -172,7 +172,7 @@
             <div class="glass-card p-4 rounded-xl flex items-center justify-between">
                 <div>
                     <h4 class="text-xs font-bold text-white">Join Official Channel</h4>
-                    <p class="text-[10px] text-slate-400">+0.025 TON Reward</p>
+                    <p class="text-[10px] text-slate-400">+0.010 TON Reward</p>
                 </div>
                 <button onclick="handleAction('tasks')" class="bg-indigo-600 text-xs px-3 py-1.5 rounded-lg font-medium">Claim</button>
             </div>
@@ -182,9 +182,9 @@
         <div id="tab-referral" class="space-y-4 hidden">
             <div class="glass-card p-5 rounded-2xl text-center space-y-3">
                 <h3 class="font-bold text-base text-indigo-300">Invite Friends & Earn</h3>
-                <p class="text-xs text-slate-400">Get 0.05 TON for every active friend you invite to this bot!</p>
+                <p class="text-xs text-slate-400">Get 0.020 TON for every active friend you invite!</p>
                 <div class="bg-slate-800 p-3 rounded-xl text-xs text-slate-300 font-mono break-all" id="ref-link">
-                    https://t.me/your_bot_username?start=ref_12345
+                    https://t.me/socialpulseaig?start=ref_12345
                 </div>
                 <button onclick="copyRefLink()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-2.5 rounded-xl font-bold text-xs transition">
                     Copy Referral Link
@@ -239,7 +239,7 @@
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Amount to Withdraw (TON)</label>
-                    <input type="number" step="0.025" id="withdraw-amount" placeholder="Min 1.0 TON" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <input type="number" step="0.010" id="withdraw-amount" placeholder="Min 1.0 TON" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Your TON Wallet Address</label>
@@ -273,7 +273,7 @@
         </button>
     </nav>
 
-    <!-- Core App Logic & Telegram SDK Integration -->
+    <!-- Core App Logic & TON Connect Integration -->
     <script>
         // 1. Firebase Initialization
         const firebaseConfig = {
@@ -293,17 +293,17 @@
 
         // Telegram WebApp User Setup
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Expand mini app full screen
+        tg.expand();
 
         let currentUser = {
             id: "guest_" + Math.floor(Math.random() * 100000),
             first_name: "Guest User",
             username: "guest",
             photo_url: "",
-            balance: 0.000
+            balance: 0.000,
+            wallet: ""
         };
 
-        // Check if opened inside Telegram
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const user = tg.initDataUnsafe.user;
             currentUser.id = "user_" + user.id;
@@ -312,15 +312,38 @@
             currentUser.photo_url = user.photo_url || "";
         }
 
-        // Initialize UI with Telegram User Data
+        // Initialize TON Connect UI
+        const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://raw.githubusercontent.com/ton-connect/docs/main/demo-dapp-manifest.json',
+            buttonRootId: 'ton-connect-btn'
+        });
+
+        // Listen to wallet connection changes
+        tonConnectUI.onStatusChange(wallet => {
+            if (wallet) {
+                const rawAddress = wallet.account.address;
+                currentUser.wallet = rawAddress;
+                const shortAddr = rawAddress.slice(0, 4) + '...' + rawAddress.slice(-4);
+                
+                document.getElementById('wallet-label-status').innerText = "Connected: " + shortAddr;
+                document.getElementById('profile-wallet-address').innerText = shortAddr;
+                document.getElementById('withdraw-wallet').value = rawAddress;
+                
+                // Save wallet to Firebase
+                db.ref('users/' + currentUser.id).update({ wallet: rawAddress });
+            } else {
+                document.getElementById('wallet-label-status').innerText = "Wallet Not Connected";
+                document.getElementById('profile-wallet-address').innerText = "Not Connected";
+            }
+        });
+
         function initUserData() {
             document.getElementById('username').innerText = currentUser.first_name;
             document.getElementById('profile-name').innerText = currentUser.first_name;
             document.getElementById('profile-username').innerText = currentUser.username;
             document.getElementById('profile-id').innerText = currentUser.id;
-            document.getElementById('ref-link').innerText = `https://t.me/your_bot_username?start=${currentUser.id}`;
+            document.getElementById('ref-link').innerText = `https://t.me/socialpulseaig?start=${currentUser.id}`;
 
-            // Set Avatar Photo or Initials
             if (currentUser.photo_url) {
                 document.getElementById('user-avatar-container').innerHTML = `<img src="${currentUser.photo_url}" class="w-full h-full object-cover">`;
                 document.getElementById('profile-avatar-large').innerHTML = `<img src="${currentUser.photo_url}" class="w-full h-full object-cover">`;
@@ -330,17 +353,22 @@
                 document.getElementById('profile-initial-large').innerText = initial;
             }
 
-            // Sync with Firebase Database
             const userRef = db.ref('users/' + currentUser.id);
             userRef.once('value').then((snapshot) => {
                 if (snapshot.exists()) {
                     currentUser.balance = snapshot.val().balance || 0.000;
+                    if(snapshot.val().wallet) {
+                        currentUser.wallet = snapshot.val().wallet;
+                        document.getElementById('withdraw-wallet').value = currentUser.wallet;
+                        document.getElementById('profile-wallet-address').innerText = currentUser.wallet.slice(0, 4) + '...' + currentUser.wallet.slice(-4);
+                    }
                 } else {
                     userRef.set({
                         name: currentUser.first_name,
                         username: currentUser.username,
                         photo_url: currentUser.photo_url,
                         balance: 0.000,
+                        wallet: "",
                         joined_at: Date.now()
                     });
                 }
@@ -367,7 +395,7 @@
             alert("Verification successful! Welcome.");
         }
 
-        // Handle Ads & Tasks
+        // Handle Ads & Tasks with updated 0.010 TON reward
         function handleAction(type) {
             if(type === 'watch_ad') {
                 if (typeof show_11759773 === 'function') {
@@ -383,13 +411,12 @@
         }
 
         function addReward() {
-            currentUser.balance += 0.025;
+            currentUser.balance += 0.010;
             updateBalanceUI();
             db.ref('users/' + currentUser.id).update({ balance: currentUser.balance });
-            alert("Task completed successfully! Earned +0.025 TON.");
+            alert("Task completed successfully! Earned +0.010 TON.");
         }
 
-        // Tabs Switching Logic
         function switchTab(tabName) {
             ['home', 'tasks', 'referral', 'profile'].forEach(tab => {
                 document.getElementById('tab-' + tab).classList.add('hidden');
@@ -399,14 +426,6 @@
             document.getElementById('tab-' + tabName).classList.remove('hidden');
             document.getElementById('nav-' + tabName).classList.add('text-indigo-400');
             document.getElementById('nav-' + tabName).classList.remove('text-slate-400');
-        }
-
-        function connectWallet() {
-            document.getElementById('wallet-status').innerText = "Connected";
-            document.getElementById('wallet-label-status').innerText = "Wallet Connected";
-            document.getElementById('connect-wallet-btn').classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
-            document.getElementById('connect-wallet-btn').classList.add('bg-emerald-600');
-            alert("TON Wallet connected successfully!");
         }
 
         function openCampaignModal() { document.getElementById('campaign-modal').classList.remove('hidden'); }
@@ -449,10 +468,10 @@
             alert("Referral link copied to clipboard!");
         }
 
-        // Run user info loader on startup
         window.onload = function() {
             initUserData();
         };
     </script>
 </body>
 </html>
+
