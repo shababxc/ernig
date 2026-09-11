@@ -418,13 +418,18 @@
       }
     };
 
-          window.shareReferral = function() {
+              // Configuration Options
+    const BOT_USERNAME = "Social_Pulse_earnBot";
+
+    // Share Referral Link
+    window.shareReferral = function() {
       const shareText = "Join this mini app and earn money daily!";
       const directBotUrl = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
       const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(directBotUrl)}&text=${encodeURIComponent(shareText)}`;
       
       tg.openTelegramLink(shareUrl);
     };
+
 
 
 
