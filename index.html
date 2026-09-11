@@ -418,12 +418,14 @@
       }
     };
 
-    window.shareReferral = function() {
-      const directAppUrl = `https://t.me/${BOT_USERNAME}/${APP_SHORT_NAME}?startapp=${user.id}`;
-      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(directAppUrl)}&text=${encodeURIComponent("Join this mini app and earn money daily!")}`;
+      window.shareReferral = function() {
+      const shareText = "Join this mini app and earn money daily!";
+      const directBotUrl = `https://t.me/${BOT_USERNAME}?start=${user.id}`;
+      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(directBotUrl)}&text=${encodeURIComponent(shareText)}`;
       
       tg.openTelegramLink(shareUrl);
     };
+
 
     window.switchTab = function(tabName, element) {
       document.querySelectorAll('.tab-content').forEach(item => item.classList.remove('active'));
