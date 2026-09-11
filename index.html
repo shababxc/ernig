@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -85,7 +85,7 @@
             <!-- Banner / Status Card -->
             <div class="glass-card p-4 rounded-2xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 flex items-center justify-between">
                 <div>
-                    <h2 class="font-bold text-base">Earn 0.010 TON / Task</h2>
+                    <h2 class="font-bold text-base">Earn 0.001 TON / Task</h2>
                     <p class="text-xs text-slate-400">Complete tasks & watch ads to earn!</p>
                 </div>
                 <!-- TON Connect Button Container -->
@@ -101,20 +101,20 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-white">Watch & Earn</h3>
-                            <p class="text-xs text-slate-400">Earn 0.010 TON per ad watched</p>
+                            <p class="text-xs text-slate-400">Earn 0.001 TON per ad watched</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
                 </button>
 
-                <button onclick="handleAction('tasks')" class="glass-card p-4 rounded-2xl flex items-center justify-between hover:bg-white/10 transition group text-left">
+                <button onclick="switchTab('tasks')" class="glass-card p-4 rounded-2xl flex items-center justify-between hover:bg-white/10 transition group text-left">
                     <div class="flex items-center space-x-4">
                         <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
                             <i class="fas fa-tasks"></i>
                         </div>
                         <div>
                             <h3 class="font-bold text-white">Channel Tasks</h3>
-                            <p class="text-xs text-slate-400">Join channels for 0.010 TON each</p>
+                            <p class="text-xs text-slate-400">Join client channels for 0.001 TON each</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500"></i>
@@ -127,7 +127,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-indigo-300">Create Campaign (Client)</h3>
-                            <p class="text-xs text-slate-400">Pay TON & promote your channel</p>
+                            <p class="text-xs text-slate-400">Pay TON & auto-publish your link</p>
                         </div>
                     </div>
                     <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-1 rounded-md">Boost</span>
@@ -166,15 +166,11 @@
             </div>
         </div>
 
-        <!-- TASKS TAB -->
+        <!-- TASKS TAB (Auto Updated) -->
         <div id="tab-tasks" class="space-y-3 hidden">
-            <h2 class="font-bold text-sm text-slate-300">Active Channel Tasks</h2>
-            <div class="glass-card p-4 rounded-xl flex items-center justify-between">
-                <div>
-                    <h4 class="text-xs font-bold text-white">Join Official Channel</h4>
-                    <p class="text-[10px] text-slate-400">+0.010 TON Reward</p>
-                </div>
-                <button onclick="handleAction('tasks')" class="bg-indigo-600 text-xs px-3 py-1.5 rounded-lg font-medium">Claim</button>
+            <h2 class="font-bold text-sm text-slate-300">Active Client Tasks</h2>
+            <div id="tasks-list-container">
+                <p class="text-xs text-slate-400 text-center py-4">Loading tasks...</p>
             </div>
         </div>
 
@@ -288,7 +284,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Admin Wallet
+        // Admin Wallet for receiving Campaign payments
         const ADMIN_TON_ADDRESS = "UQC_uwp-fGIO5qwRgGKe0ymORn-Cd-pW_HtBVbHD-NPzIVfq";
 
         // Telegram WebApp User Setup
@@ -329,7 +325,6 @@
                 document.getElementById('profile-wallet-address').innerText = shortAddr;
                 document.getElementById('withdraw-wallet').value = rawAddress;
                 
-                // Save wallet to Firebase
                 db.ref('users/' + currentUser.id).update({ wallet: rawAddress });
             } else {
                 document.getElementById('wallet-label-status').innerText = "Wallet Not Connected";
@@ -374,6 +369,9 @@
                 }
                 updateBalanceUI();
             });
+            
+            // Load Campaigns into Tasks
+            loadTasks();
         }
 
         function updateBalanceUI() {
@@ -395,26 +393,24 @@
             alert("Verification successful! Welcome.");
         }
 
-        // Handle Ads & Tasks with updated 0.010 TON reward
+        // Updated Reward: 0.001 TON
         function handleAction(type) {
             if(type === 'watch_ad') {
                 if (typeof show_11759773 === 'function') {
-                    show_11759773().then(() => { addReward(); }).catch(() => { addReward(); });
+                    show_11759773().then(() => { addReward(0.001); }).catch(() => { addReward(0.001); });
                 } else {
-                    addReward();
+                    addReward(0.001);
                 }
-            } else if(type === 'tasks') {
-                addReward();
             } else {
                 alert("Feature coming soon!");
             }
         }
 
-        function addReward() {
-            currentUser.balance += 0.010;
+        function addReward(amount) {
+            currentUser.balance += amount;
             updateBalanceUI();
             db.ref('users/' + currentUser.id).update({ balance: currentUser.balance });
-            alert("Task completed successfully! Earned +0.010 TON.");
+            alert(`Task completed successfully! Earned +${amount.toFixed(3)} TON.`);
         }
 
         function switchTab(tabName) {
@@ -426,22 +422,102 @@
             document.getElementById('tab-' + tabName).classList.remove('hidden');
             document.getElementById('nav-' + tabName).classList.add('text-indigo-400');
             document.getElementById('nav-' + tabName).classList.remove('text-slate-400');
+            
+            if(tabName === 'tasks') loadTasks();
         }
 
         function openCampaignModal() { document.getElementById('campaign-modal').classList.remove('hidden'); }
         function closeCampaignModal() { document.getElementById('campaign-modal').classList.add('hidden'); }
+        
         function calculateCost() {
             const duration = document.getElementById('camp-duration').value;
             let cost = duration == "48" ? 1.0 : 3.5;
             document.getElementById('camp-cost').innerText = cost.toFixed(1) + " TON";
         }
 
-        function payAndPublishCampaign() {
+        // Send Transaction and Publish Campaign Auto to Tasks
+        async function payAndPublishCampaign() {
             const link = document.getElementById('camp-link').value;
-            if(!link) { alert("Enter channel link!"); return; }
-            db.ref('campaigns').push({ user_id: currentUser.id, link: link, timestamp: Date.now() });
-            closeCampaignModal();
-            alert("Campaign published successfully!");
+            const duration = document.getElementById('camp-duration').value;
+            
+            if(!link) { alert("Please enter your channel link!"); return; }
+            if(!tonConnectUI.connected) {
+                alert("Please connect your TON wallet first using the 'Connect Wallet' button on the Home screen!");
+                return;
+            }
+
+            let cost = duration == "48" ? 1.0 : 3.5;
+            let costNano = cost * 1000000000; // TON to nanoTON conversion
+
+            const transaction = {
+                validUntil: Math.floor(Date.now() / 1000) + 300, // 5 minutes validity
+                messages: [
+                    {
+                        address: ADMIN_TON_ADDRESS,
+                        amount: costNano.toString()
+                    }
+                ]
+            };
+
+            try {
+                // This triggers the wallet popup window exactly like your screenshot
+                const result = await tonConnectUI.sendTransaction(transaction);
+                
+                // If successful, save campaign to database
+                db.ref('campaigns').push({ 
+                    user_id: currentUser.id, 
+                    link: link, 
+                    duration: duration,
+                    active: true,
+                    timestamp: Date.now() 
+                });
+                
+                closeCampaignModal();
+                alert("Payment successful! Your campaign has been automatically published to the Tasks section.");
+                loadTasks(); // Refresh tasks automatically
+                
+            } catch (error) {
+                console.error(error);
+                alert("Transaction failed or was cancelled by user.");
+            }
+        }
+
+        // Load active campaigns for users to complete
+        function loadTasks() {
+            const container = document.getElementById('tasks-list-container');
+            db.ref('campaigns').once('value').then(snapshot => {
+                container.innerHTML = '';
+                let hasTasks = false;
+                
+                snapshot.forEach(child => {
+                    let task = child.val();
+                    if(task.active) {
+                        hasTasks = true;
+                        container.innerHTML += `
+                            <div class="glass-card p-4 rounded-xl flex items-center justify-between mt-2">
+                                <div>
+                                    <h4 class="text-xs font-bold text-white">Join Channel</h4>
+                                    <p class="text-[10px] text-slate-400">+0.001 TON Reward</p>
+                                </div>
+                                <button onclick="completeClientTask('${task.link}')" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-medium transition">Join & Claim</button>
+                            </div>
+                        `;
+                    }
+                });
+
+                if(!hasTasks) {
+                    container.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">No active client tasks right now. Please check back later.</p>';
+                }
+            });
+        }
+
+        // Complete user task
+        function completeClientTask(link) {
+            window.open(link, '_blank');
+            // Give user time to join the channel before rewarding
+            setTimeout(() => {
+                addReward(0.001);
+            }, 5000);
         }
 
         function openWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('hidden'); }
@@ -474,4 +550,4 @@
     </script>
 </body>
 </html>
-
+       
