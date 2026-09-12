@@ -547,7 +547,7 @@
                         adSuccess = true;
                         alert("Ad completed! Please wait 10 seconds for reward verification...");
                         setTimeout(() => {
-                            grantAdReward(0.01);
+                            grantAdReward(1000);
                         }, 10000);
                         return;
                     }
@@ -563,7 +563,7 @@
                         show_11759773().then(() => {
                             alert("Ad completed! Please wait 10 seconds for reward verification...");
                             setTimeout(() => {
-                                grantAdReward(0.01);
+                                grantAdReward(1000);
                             }, 10000);
                         }).catch((e) => {
                             alert("Ad playback was not completed or was cancelled.");
