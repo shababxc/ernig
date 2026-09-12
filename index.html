@@ -18,6 +18,9 @@
     <!-- Monetag SDK -->
     <script src='//libtl.com/sdk.js' data-zone='11759773' data-sdk='show_11759773'></script>
 
+    <!-- AdsGram SDK -->
+    <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -500,7 +503,17 @@
             alert("Verification successful! Welcome.");
         }
 
-        // Updated Ad Watch Logic: 2-3 seconds landing page requirement
+        // AdsGram Controller Initialization with Block ID 47529
+        let adsgramController = null;
+        try {
+            if (window.Adsgram) {
+                adsgramController = window.Adsgram.init({ blockId: "47529" });
+            }
+        } catch (e) {
+            console.log("Adsgram init warning:", e);
+        }
+
+        // Updated Ad Watch Logic with AdsGram + Monetag Fallback Integration
         let adActive = false;
         let adVisitTime = 0;
         let visitedLandingPage = false;
@@ -508,45 +521,71 @@
         window.addEventListener('blur', () => {
             if (adActive) {
                 visitedLandingPage = true;
-                adVisitTime = Date.now(); // ইউজার ল্যান্ডিং পেজে যাওয়ার সময় রেকর্ড হলো
+                adVisitTime = Date.now();
             }
         });
 
-        function handleAction(type) {
-            if(type === 'watch_ad') {
+        async function handleAction(type) {
+            if (type === 'watch_ad') {
                 adActive = true;
                 visitedLandingPage = false;
                 adVisitTime = 0;
 
-                if (typeof show_11759773 === 'function') {
-                    show_11759773().catch(() => {});
+                let adSuccess = false;
+
+                // ১. প্রথমে AdsGram অ্যাড দেখানোর চেষ্টা করবে
+                try {
+                    if (adsgramController) {
+                        const result = await adsgramController.show();
+                        adSuccess = true;
+                        grantAdReward();
+                    }
+                } catch (err) {
+                    console.log("AdsGram ad failed or unavailable, trying Monetag...", err);
                 }
 
-                // ১০ সেকেন্ড বা টোটাল অ্যাড সাইকেল চেক করার জন্য
-                setTimeout(() => {
-                    if (!adActive) return;
-                    
-                    if (visitedLandingPage) {
-                        let timeSpentOnLanding = (Date.now() - adVisitTime) / 1000;
-                        
-                        // ইউজার ল্যান্ডিং পেজে গিয়ে যদি ২ থেকে ৩ সেকেন্ড বা তার বেশি সময় থাকে (অথবা দ্রুত ব্যাক করলেও রিওয়ার্ড দিয়ে দেওয়া)
-                        if (timeSpentOnLanding >= 2) {
-                            currentUser.total_ads += 1;
-                            addReward(0.01);
-                        } else {
-                            currentUser.total_ads += 1;
-                            addReward(0.01); // ২ সেকেন্ডের কম হলেও যেহেতু ল্যান্ডিং পেজে ক্লিক করেছে, তাই রিওয়ার্ড দিয়ে দেওয়া হলো
+                // ২. AdsGram ব্যর্থ হলে Monetag (show_11759773) ট্রাই করবে
+                if (!adSuccess) {
+                    try {
+                        if (typeof show_11759773 === 'function') {
+                            show_11759773().catch(() => {});
                         }
-                    } else {
-                        // ইউজার অ্যাডের ল্যান্ডিং পেজে ক্লিকই করেনি (ফাঁকি দিয়েছে)
-                        alert("⚠️ Warning: You must click and visit the ad page for at least 2-3 seconds to get your reward!");
+
+                        // টাইমআউট ও ল্যান্ডিং পেজ ভেরিফিকেশন লজিক
+                        setTimeout(() => {
+                            if (!adActive) return;
+                            
+                            if (visitedLandingPage) {
+                                grantAdReward();
+                            } else {
+                                alert("⚠️ Warning: You must click and visit the ad page for at least 2-3 seconds to get your reward!");
+                            }
+                            adActive = false;
+                            visitedLandingPage = false;
+                        }, 12000);
+                        return; // Monetag সফল হলে এখানেই শেষ
+                    } catch (mErr) {
+                        console.log("Monetag failed as well:", mErr);
+                        alert("দুঃখিত, এই মুহূর্তে কোনো অ্যাড উপলব্ধ নেই। কিছুক্ষণ পর আবার চেষ্টা করুন।");
                     }
-                    adActive = false;
-                    visitedLandingPage = false;
-                }, 12000);
+                }
+
+                adActive = false;
             } else {
                 alert("Feature coming soon!");
             }
+        }
+
+        function grantAdReward() {
+            currentUser.total_ads += 1;
+            currentUser.balance += 0.01;
+            updateUIStats();
+            db.ref('users/' + currentUser.id).update({ 
+                balance: currentUser.balance,
+                total_ads: currentUser.total_ads,
+                total_tasks: currentUser.total_tasks
+            });
+            alert(`Task completed successfully! Earned +0.01 TON.`);
         }
 
         function addReward(amount) {
