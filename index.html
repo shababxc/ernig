@@ -36,6 +36,7 @@
             background-color: #161c2e;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+        /* Customizing TON Connect Button to fit the right side box perfectly */
         #ton-connect-btn button {
             background-color: #6366f1 !important;
             border-radius: 0.75rem !important;
@@ -96,19 +97,20 @@
         <!-- HOME TAB -->
         <div id="tab-home" class="space-y-3">
             
-            <!-- Top Banner Card with Wallet Connect Button on the Right Side -->
+            <!-- Top Banner Card with Wallet Connect Button on the Right Side Inside the Marked Box -->
             <div class="card-item p-4 rounded-2xl bg-gradient-to-r from-indigo-900/40 via-purple-900/20 to-slate-900 flex items-center justify-between border border-indigo-500/20 shadow-lg">
                 <div class="pr-2 max-w-[55%]">
                     <h2 class="font-bold text-sm text-white">Earn & Promote</h2>
                     <p class="text-[10px] text-slate-400 mt-0.5 leading-tight">Watch ads, complete tasks or boost your channel.</p>
                 </div>
+                <!-- Wallet Connect Button right side designated marked spot -->
                 <div id="ton-connect-btn" class="shrink-0 flex items-center justify-center"></div>
             </div>
 
             <!-- List Buttons Container -->
             <div class="space-y-3 pt-1">
                 
-                <!-- Watch & Earn with reward label -->
+                <!-- Watch & Earn -->
                 <button onclick="handleAction('watch_ad')" class="card-item w-full p-3.5 rounded-2xl flex items-center justify-between hover:bg-[#1c243b] transition group text-left">
                     <div class="flex items-center space-x-3.5">
                         <div class="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl shrink-0">
@@ -116,7 +118,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-sm text-white">Watch & Earn</h3>
-                            <p class="text-[11px] text-amber-400 font-medium">+0.001 TON per ad</p>
+                            <p class="text-[11px] text-amber-400 font-medium">+0.01 TON per ad</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-500 text-xs"></i>
@@ -279,7 +281,7 @@
         </div>
     </div>
 
-    <!-- Withdrawal Modal -->
+    <!-- Withdrawal Modal (Wallet & Assets) -->
     <div id="withdraw-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
         <div class="card-item bg-[#161c2e] border border-slate-700 w-full max-w-sm p-6 rounded-2xl space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
@@ -308,19 +310,23 @@
 
     <!-- Bottom Navigation Bar -->
     <nav class="fixed bottom-0 left-0 right-0 border-t border-slate-800/80 py-2.5 px-6 flex justify-between items-center bg-[#0d111d]/95 backdrop-blur-md z-40">
+        
         <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-indigo-400 transition">
             <i class="fas fa-home text-lg"></i>
             <span class="text-[10px] mt-1 font-medium">Home</span>
         </button>
+
         <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center text-slate-400 hover:text-white transition">
             <i class="fas fa-list-check text-lg"></i>
             <span class="text-[10px] mt-1 font-medium">Tasks</span>
         </button>
+
         <button onclick="switchTab('referral')" id="nav-referral" class="flex flex-col items-center text-slate-400 hover:text-white transition relative">
             <span class="absolute -top-1.5 -right-2 bg-pink-500 text-[8px] px-1.5 py-0.2 rounded-full text-white font-bold">New</span>
             <i class="fas fa-user-group text-lg"></i>
             <span class="text-[10px] mt-1 font-medium">Referral</span>
         </button>
+
         <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-slate-400 hover:text-white transition">
             <i class="fas fa-user text-lg"></i>
             <span class="text-[10px] mt-1 font-medium">Profile</span>
@@ -329,6 +335,7 @@
 
     <!-- Core App Logic -->
     <script>
+        // 1. Firebase Initialization
         const firebaseConfig = {
             apiKey: "AIzaSyCizaCuNkTOsdyeLErVsUzjTj6P0Du6zZw",
             authDomain: "social-media-fe850.firebaseapp.com",
@@ -368,6 +375,7 @@
             currentUser.photo_url = user.photo_url || "";
         }
 
+        // Render user details instantly from Telegram Data
         function renderUserHeaderAndProfile() {
             document.getElementById('username').innerText = currentUser.first_name;
             document.getElementById('profile-name').innerText = currentUser.first_name;
@@ -387,6 +395,7 @@
 
         renderUserHeaderAndProfile();
 
+        // Safe TON Connect Initialization inside the designated right-side box
         let tonConnectUI = null;
         try {
             tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
@@ -403,6 +412,7 @@
                     
                     document.getElementById('wallet-label-status').innerText = "Connected";
                     document.getElementById('profile-wallet-address').innerText = shortAddr;
+                    
                     if (walletInput) walletInput.value = rawAddress;
                     
                     db.ref('users/' + currentUser.id).update({ wallet: rawAddress });
@@ -410,6 +420,7 @@
                     currentUser.wallet = "";
                     document.getElementById('wallet-label-status').innerText = "Wallet Not Connected";
                     document.getElementById('profile-wallet-address').innerText = "Not Connected";
+                    
                     if (walletInput) walletInput.value = "";
                     
                     db.ref('users/' + currentUser.id).update({ wallet: "" });
@@ -440,8 +451,6 @@
                     }
                 } else {
                     const startParam = tg.initDataUnsafe && tg.initDataUnsafe.start_param ? tg.initDataUnsafe.start_param : "";
-                    currentUser.wallet = "";
-                    if (walletInput) walletInput.value = "";
                     
                     userRef.set({
                         name: currentUser.first_name,
@@ -470,6 +479,8 @@
                             }
                         });
                     }
+                    currentUser.wallet = "";
+                    if (walletInput) walletInput.value = "";
                 }
                 updateUIStats();
             });
@@ -488,6 +499,7 @@
             document.getElementById('profile-ref-count').innerText = currentUser.total_referrals || 0;
         }
 
+        // --- Channel Verification Logic ---
         let joinedClicked = false;
 
         function joinChannel() {
@@ -513,61 +525,35 @@
             alert("Verification successful! Welcome.");
         }
 
-        // --- Ad Click & Reward Verification Logic ---
+        // --- Watch & Earn Logic ---
         let adTriggered = false;
-        let adClickedOrLeft = false;
-
-        window.addEventListener('blur', function() {
-            if (adTriggered) {
-                adClickedOrLeft = true;
-            }
-        });
-
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden && adTriggered) {
-                adClickedOrLeft = true;
-            }
-        });
+        let adStartTime = 0;
 
         function handleAction(type) {
             if(type === 'watch_ad') {
                 adTriggered = true;
-                adClickedOrLeft = false;
+                adStartTime = Date.now();
                 if (typeof show_11759773 === 'function') {
-                    try {
-                        show_11759773().catch(() => {});
-                    } catch(e) {}
+                    show_11759773().catch(() => {});
                 }
             } else {
                 alert("Feature coming soon!");
             }
         }
 
-        window.addEventListener('focus', function() {
-            checkAdReturn();
-        });
-
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === "visible") {
-                checkAdReturn();
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "visible" && adTriggered) {
+                adTriggered = false;
+                let timeSpent = (Date.now() - adStartTime) / 1000;
+                
+                if (timeSpent < 10) {
+                    alert("⚠️ Warning: You must watch the full ad to receive your reward. Please view the complete ad.");
+                } else {
+                    currentUser.total_ads += 1;
+                    addReward(0.01);
+                }
             }
         });
-
-        function checkAdReturn() {
-            if (adTriggered) {
-                setTimeout(() => {
-                    if (adTriggered) {
-                        adTriggered = false;
-                        if (adClickedOrLeft) {
-                            currentUser.total_ads += 1;
-                            addReward(0.001);
-                        } else {
-                            alert("⚠️ রিওয়ার্ড পেতে হলে অবশ্যই অ্যাডের ভেতরে ক্লিক করে ভিজিট করতে হবে।");
-                        }
-                    }
-                }, 500);
-            }
-        }
 
         function addReward(amount) {
             currentUser.balance += amount;
@@ -580,6 +566,7 @@
             alert(`Task completed successfully! Earned +${amount} TON.`);
         }
 
+        // Navigation Tab Switch
         function switchTab(tabName) {
             ['home', 'tasks', 'leaderboard', 'referral', 'profile'].forEach(tab => {
                 const element = document.getElementById('tab-' + tab);
@@ -605,6 +592,7 @@
             if(tabName === 'leaderboard') loadLeaderboardData();
         }
 
+        // --- Leaderboard Sub-tab System ---
         let currentLeaderboardType = 'referrals';
 
         function switchLeaderboardSubTab(type) {
@@ -712,7 +700,7 @@
             };
 
             try {
-                await tonConnectUI.sendTransaction(transaction);
+                const result = await tonConnectUI.sendTransaction(transaction);
                 
                 db.ref('campaigns').push({ 
                     user_id: currentUser.id, 
@@ -772,15 +760,16 @@
         function openWithdrawModal() { 
             const walletInput = document.getElementById('withdraw-wallet');
             if (currentUser.wallet) {
-                walletInput.value = currentUser.wallet;
+                walletInput.value = currentUser.wallet; // Shows real connected wallet
             } else {
-                walletInput.value = "";
+                walletInput.value = ""; // Completely blank if not connected
             }
             document.getElementById('withdraw-modal').classList.remove('hidden'); 
         }
-
+        
         function closeWithdrawModal() { document.getElementById('withdraw-modal').classList.add('hidden'); }
 
+        // --- Withdrawal Requirements & Popup Validation Logic ---
         function submitWithdrawRequest() {
             const amount = parseFloat(document.getElementById('withdraw-amount').value);
             const wallet = document.getElementById('withdraw-wallet').value;
@@ -790,22 +779,22 @@
             const minWithdrawLimit = 1.0;
 
             if (!amount || amount < minWithdrawLimit) {
-                alert(`⚠️ ন্যূনতম ১ TON হলে তবেই উইথড্র করতে পারবেন।`);
+                alert(`⚠️ Minimum withdrawal limit is 1.0 TON.`);
                 return;
             }
 
             if (currentUser.total_ads < requiredAds || currentUser.total_tasks < requiredTasks) {
-                alert(`⚠️ আপনার রিকোয়ারমেন্ট এখনো পূরণ হয়নি!\n\nউইথড্র করার জন্য শর্তসমূহ:\n- কমপক্ষে ${requiredAds} টি অ্যাড দেখা আবশ্যক (আপনার দেখা হয়েছে: ${currentUser.total_ads})\n- কমপক্ষে ${requiredTasks} টি টাস্ক পূরণ আবশ্যক (আপনার পূরণ হয়েছে: ${currentUser.total_tasks})\n\nদয়া করে শর্তগুলো পূরণ করে তারপর উইথড্র দিন।`);
+                alert(`⚠️ Requirements not met!\n\nWithdrawal Conditions:\n- Minimum ${requiredAds} ads watched (Watched: ${currentUser.total_ads})\n- Minimum ${requiredTasks} tasks completed (Completed: ${currentUser.total_tasks})\n\nPlease complete the requirements before requesting a withdrawal.`);
                 return;
             }
 
             if (!wallet) {
-                alert("দয়া করে প্রথমে আপনার TON ওয়ালেট কানেক্ট করুন।");
+                alert("Please connect your TON wallet first.");
                 return;
             }
 
             if (amount > currentUser.balance) {
-                alert("আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।");
+                alert("Insufficient balance in your account.");
                 return;
             }
 
@@ -822,7 +811,7 @@
             db.ref('users/' + currentUser.id).update({ balance: currentUser.balance });
             
             closeWithdrawModal();
-            alert("✅ উইথড্র রিকোয়েস্ট সফলভাবে সাবমিট হয়েছে!");
+            alert("✅ Withdrawal request submitted successfully!");
         }
 
         function copyRefLink() {
@@ -831,15 +820,18 @@
             alert("Referral link copied to clipboard!");
         }
 
+        // --- Check Verification Status on Page Load ---
         window.onload = function() {
-            if (localStorage.getItem('channel_verified') === 'true') {
+            const isVerified = localStorage.getItem('channel_verified');
+            
+            if (isVerified === 'true') {
                 document.getElementById('verify-modal').classList.add('hidden');
             } else {
                 document.getElementById('verify-modal').classList.remove('hidden');
             }
+            
             initUserData();
         };
     </script>
 </body>
 </html>
-            
