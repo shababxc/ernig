@@ -500,24 +500,50 @@
             alert("Verification successful! Welcome.");
         }
 
-        // Fixed Ad Watch & Warning Logic
-        let adStartTime = 0;
+        // Updated Ad Watch Logic: 2-3 seconds landing page requirement
+        let adActive = false;
+        let adVisitTime = 0;
+        let visitedLandingPage = false;
+
+        window.addEventListener('blur', () => {
+            if (adActive) {
+                visitedLandingPage = true;
+                adVisitTime = Date.now(); // ইউজার ল্যান্ডিং পেজে যাওয়ার সময় রেকর্ড হলো
+            }
+        });
+
         function handleAction(type) {
             if(type === 'watch_ad') {
-                adStartTime = Date.now();
+                adActive = true;
+                visitedLandingPage = false;
+                adVisitTime = 0;
+
                 if (typeof show_11759773 === 'function') {
                     show_11759773().catch(() => {});
                 }
 
+                // ১০ সেকেন্ড বা টোটাল অ্যাড সাইকেল চেক করার জন্য
                 setTimeout(() => {
-                    let timeSpent = (Date.now() - adStartTime) / 1000;
-                    if (document.hasFocus() && timeSpent < 12) {
-                        alert("⚠️ Warning: You must watch the full ad to receive your reward. Please view the complete ad.");
+                    if (!adActive) return;
+                    
+                    if (visitedLandingPage) {
+                        let timeSpentOnLanding = (Date.now() - adVisitTime) / 1000;
+                        
+                        // ইউজার ল্যান্ডিং পেজে গিয়ে যদি ২ থেকে ৩ সেকেন্ড বা তার বেশি সময় থাকে (অথবা দ্রুত ব্যাক করলেও রিওয়ার্ড দিয়ে দেওয়া)
+                        if (timeSpentOnLanding >= 2) {
+                            currentUser.total_ads += 1;
+                            addReward(0.01);
+                        } else {
+                            currentUser.total_ads += 1;
+                            addReward(0.01); // ২ সেকেন্ডের কম হলেও যেহেতু ল্যান্ডিং পেজে ক্লিক করেছে, তাই রিওয়ার্ড দিয়ে দেওয়া হলো
+                        }
                     } else {
-                        currentUser.total_ads += 1;
-                        addReward(0.01);
+                        // ইউজার অ্যাডের ল্যান্ডিং পেজে ক্লিকই করেনি (ফাঁকি দিয়েছে)
+                        alert("⚠️ Warning: You must click and visit the ad page for at least 2-3 seconds to get your reward!");
                     }
-                }, 15000);
+                    adActive = false;
+                    visitedLandingPage = false;
+                }, 12000);
             } else {
                 alert("Feature coming soon!");
             }
@@ -703,7 +729,6 @@
             }, 5000);
         }
 
-        // Fixed Dynamic Wallet Display on Withdraw Modal
         function openWithdrawModal() { 
             const walletInput = document.getElementById('withdraw-wallet');
             if (currentUser.wallet) {
