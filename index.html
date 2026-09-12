@@ -15,8 +15,8 @@
     <!-- TON Connect UI SDK -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 
-    <!-- AdsGram SDK (Primary Ad) -->
-    <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
+    <!-- AdsGram SDK (Primary Ad - Reward Video Standard) -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
     <!-- Monetag SDK (Fallback Ad) -->
     <script src='//libtl.com/sdk.js' data-zone='11759773' data-sdk='show_11759773'></script>
@@ -197,6 +197,10 @@
                     <div class="flex justify-between"><span class="text-slate-400">Tasks Completed:</span> <span id="profile-tasks-count" class="font-bold text-purple-400">0 / 40</span></div>
                     <div class="flex justify-between"><span class="text-slate-400">Connected Wallet:</span> <span id="profile-wallet-address" class="font-mono text-emerald-400">Not Connected</span></div>
                 </div>
+                <!-- Profile Wallet Note -->
+                <p class="text-[10px] text-indigo-300/80 bg-indigo-950/40 p-2.5 rounded-xl border border-indigo-500/20 text-left">
+                    ℹ️ <strong>Note:</strong> TON network displays addresses in system format (0:...). Your address and wallet are 100% valid and safe.
+                </p>
             </div>
         </div>
 
@@ -297,6 +301,10 @@
                     <label class="text-xs text-slate-400 block mb-1">Your TON Wallet Address</label>
                     <input type="text" id="withdraw-wallet" value="" placeholder="Connect your wallet first" class="w-full bg-[#101524] border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" readonly>
                 </div>
+                <!-- Withdrawal Note -->
+                <p class="text-[10px] text-indigo-300/80 bg-indigo-950/40 p-2.5 rounded-xl border border-indigo-500/20">
+                    ℹ️ <strong>Note:</strong> TON network displays addresses in system format (0:...). Your address and wallet are 100% valid and safe.
+                </p>
             </div>
             <button onclick="submitWithdrawRequest()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold transition text-sm text-slate-950 shadow-lg">
                 Submit Withdrawal Request
@@ -342,7 +350,7 @@
         const ADMIN_TON_ADDRESS = "UQC_uwp-fGIO5qwRgGKe0ymORn-Cd-pW_HtBVbHD-NPzIVfq";
         const CHANNEL_URL = "https://t.me/mediaboostAi";
         const BOT_USERNAME = "mediaboostAiBot";
-        const ADSGRAM_BLOCK_ID = "47529"; // আপনার কনফার্মড ব্লক আইডি
+        const ADSGRAM_BLOCK_ID = "47529";
 
         const tg = window.Telegram.WebApp;
         tg.expand();
@@ -507,7 +515,6 @@
         function initAdsgram() {
             if (window.Adsgram) {
                 try {
-                    // String/Number দুই স্ট্রাকচারেই সাপোর্ট নিশ্চিত করা হলো
                     adsgramController = window.Adsgram.init({ blockId: String(ADSGRAM_BLOCK_ID) });
                 } catch (e) {
                     console.log("Adsgram init warning:", e);
@@ -528,7 +535,7 @@
 
             let adSuccess = false;
 
-            // ১. প্রথম চেষ্টা: AdsGram
+            // 1. First Attempt: AdsGram
             try {
                 if (!adsgramController && window.Adsgram) {
                     initAdsgram();
@@ -549,7 +556,7 @@
                 console.log("AdsGram skipped/failed. Switching to Monetag fallback...", err);
             }
 
-            // ২. দ্বিতীয় চেষ্টা (Fallback): Monetag
+            // 2. Second Attempt (Fallback): Monetag
             if (!adSuccess) {
                 try {
                     if (typeof show_11759773 === 'function') {
@@ -559,19 +566,19 @@
                                 grantAdReward(0.01);
                             }, 10000);
                         }).catch((e) => {
-                            alert("বিজ্ঞাপন দেখা সম্পন্ন হয়নি বা বাতিল করা হয়েছে।");
+                            alert("Ad playback was not completed or was cancelled.");
                         });
                     } else {
-                        alert("এই মুহূর্তে কোনো বিজ্ঞাপন উপলব্ধ নেই। অনুগ্রহ করে কিছু পরে আবার চেষ্টা করুন।");
+                        alert("No ads available at the moment. Please try again later.");
                     }
                 } catch (mErr) {
                     console.log("Monetag failed:", mErr);
-                    alert("বিজ্ঞাপন লোড করতে সমস্যা হয়েছে।");
+                    alert("Failed to load ad.");
                 }
             }
         }
 
-        // নিরাপদ রিওয়ার্ড সিস্টেম
+        // Reward System
         function grantAdReward(amount) {
             const userRef = db.ref('users/' + currentUser.id);
             userRef.child('balance').set(firebase.database.ServerValue.increment(amount));
@@ -707,7 +714,6 @@
             try {
                 await tonConnectUI.sendTransaction(transaction);
                 
-                // মেয়াদের সময় সেট করে দেওয়া হলো
                 const durationHours = parseInt(duration);
                 const expireAt = Date.now() + (durationHours * 3600 * 1000);
 
@@ -740,7 +746,6 @@
                     let taskKey = child.key;
                     let task = child.val();
 
-                    // মেয়াদী কাজ ডিঅ্যাক্টিভ করা
                     if (task.expire_at && task.expire_at < now) {
                         db.ref('campaigns/' + taskKey).update({ active: false });
                         return;
@@ -815,7 +820,6 @@
                 return;
             }
 
-            // রিয়েল-টাইমে ডাটাবেজ থেকে রি-চেক (Security Fix)
             db.ref('users/' + currentUser.id).once('value').then(snapshot => {
                 if(!snapshot.exists()) return;
                 const dbUser = snapshot.val();
@@ -825,7 +829,6 @@
                     return;
                 }
 
-                // উইথড্র রেকর্ড সেভ
                 db.ref('withdrawals').push({ 
                     user_id: currentUser.id, 
                     amount: amount, 
@@ -834,7 +837,6 @@
                     timestamp: Date.now() 
                 });
 
-                // ডাটাবেজে ব্যালেন্স কমানো এবং টাস্ক/অ্যাড কাউন্টার রিসেট
                 const newBalance = dbUser.balance - amount;
                 db.ref('users/' + currentUser.id).update({
                     balance: newBalance,
