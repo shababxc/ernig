@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Mini App - Task & Earn</title>
+    <title>Telegram Mini App - Earn & Promote</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -24,29 +24,33 @@
 
     <style>
         body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
+            background-color: #0d111d;
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
         .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(23, 29, 45, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .card-item {
+            background-color: #161c2e;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         #ton-connect-btn button {
-            background-color: #4f46e5 !important;
+            background-color: #5856d6 !important;
             border-radius: 0.75rem !important;
             padding: 8px 16px !important;
             font-weight: 700 !important;
             font-size: 13px !important;
+            color: #ffffff !important;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between pb-24 relative">
+<body class="min-h-screen flex flex-col justify-between pb-24 relative selection:bg-indigo-500 selection:text-white">
 
     <!-- Force Subscription / Channel Verify Modal -->
     <div id="verify-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden">
-        <div class="glass-card bg-slate-900 border border-slate-700 w-full max-w-sm p-6 rounded-2xl text-center space-y-4 shadow-2xl">
+        <div class="glass-card bg-[#161c2e] border border-slate-700 w-full max-w-sm p-6 rounded-2xl text-center space-y-4 shadow-2xl">
             <div class="w-16 h-16 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mx-auto text-2xl">
                 <i class="fab fa-telegram-plane"></i>
             </div>
@@ -56,9 +60,9 @@
             </div>
             
             <div class="space-y-2 pt-2">
-                <a href="https://t.me/socialpulseaig" target="_blank" class="block w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition text-sm text-white">
+                <button onclick="joinChannel()" class="block w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition text-sm text-white text-center">
                     <i class="fab fa-telegram mr-1"></i> Join Channel
-                </a>
+                </button>
                 <button onclick="checkSubscription()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold transition text-sm text-slate-950">
                     <i class="fas fa-check-circle mr-1"></i> Verify Membership
                 </button>
@@ -66,94 +70,117 @@
         </div>
     </div>
 
-    <!-- Top Header & Balance Section -->
-    <header class="p-4 flex items-center justify-between border-b border-slate-800">
+    <!-- Top Header User Brief -->
+    <header class="p-4 flex items-center justify-between border-b border-slate-800/60 bg-[#121724]">
         <div class="flex items-center space-x-3">
-            <div id="user-avatar-container" class="w-11 h-11 rounded-full overflow-hidden bg-indigo-600 flex items-center justify-center font-bold text-lg border-2 border-indigo-400/40 shadow-md">
+            <div id="user-avatar-container" class="w-10 h-10 rounded-full overflow-hidden bg-indigo-600 flex items-center justify-center font-bold text-base border border-indigo-400/30">
                 <span id="user-initial">U</span>
             </div>
             <div>
-                <h1 class="text-sm font-bold text-slate-200" id="username">Loading...</h1>
-                <span class="text-xs text-emerald-400 flex items-center"><i class="fas fa-circle text-[8px] mr-1"></i> <span id="wallet-label-status">Wallet Not Connected</span></span>
+                <h1 class="text-xs font-bold text-slate-200" id="username">Loading...</h1>
+                <span class="text-[10px] text-emerald-400 flex items-center"><i class="fas fa-circle text-[6px] mr-1"></i> <span id="wallet-label-status">Wallet Not Connected</span></span>
             </div>
         </div>
-        <div class="glass-card px-4 py-1.5 rounded-full flex items-center space-x-2">
-            <img src="https://cryptologos.cc/logos/toncoin-ton-logo.svg?v=035" alt="TON" class="w-5 h-5">
-            <span class="font-bold text-lg" id="user-balance">0.000</span> <span class="text-xs text-slate-400">TON</span>
+        <div class="glass-card px-3 py-1 rounded-full flex items-center space-x-2 bg-[#192033]">
+            <img src="https://cryptologos.cc/logos/toncoin-ton-logo.svg?v=035" alt="TON" class="w-4 h-4">
+            <span class="font-bold text-sm" id="user-balance">0.000</span> <span class="text-[10px] text-slate-400">TON</span>
         </div>
     </header>
 
     <!-- Main Content Dynamic Tabs -->
-    <main class="p-4 flex-grow space-y-4 max-w-md mx-auto w-full">
+    <main class="p-4 flex-grow space-y-3 max-w-md mx-auto w-full">
         
         <!-- HOME TAB -->
-        <div id="tab-home" class="space-y-4">
-            <div class="glass-card p-4 rounded-2xl bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 flex items-center justify-between">
-                <div>
-                    <h2 class="font-bold text-base">Earn TON / Task & Ad</h2>
-                    <p class="text-xs text-slate-400">Complete tasks & watch ads to earn!</p>
+        <div id="tab-home" class="space-y-3">
+            
+            <!-- Top Banner Card -->
+            <div class="card-item p-4 rounded-2xl bg-gradient-to-r from-indigo-900/40 via-purple-900/20 to-slate-900 flex items-center justify-between border border-indigo-500/20">
+                <div class="pr-2">
+                    <h2 class="font-bold text-base text-white">Earn & Promote</h2>
+                    <p class="text-[11px] text-slate-400 mt-0.5 leading-tight">Watch ads, complete tasks or boost your channel.</p>
                 </div>
-                <div id="ton-connect-btn"></div>
+                <div id="ton-connect-btn" class="shrink-0"></div>
             </div>
 
-            <div class="grid grid-cols-1 gap-3.5">
-                <button onclick="handleAction('watch_ad')" class="glass-card p-4 rounded-2xl flex items-center justify-between hover:bg-white/10 transition group text-left">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+            <!-- List Buttons Container -->
+            <div class="space-y-3 pt-1">
+                
+                <!-- Watch & Earn -->
+                <button onclick="handleAction('watch_ad')" class="card-item w-full p-3.5 rounded-2xl flex items-center justify-between hover:bg-[#1c243b] transition group text-left">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl shrink-0">
                             <i class="fas fa-play-circle"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white">Watch & Earn</h3>
-                            <p class="text-xs text-slate-400">Earn 0.001 TON per ad watched</p>
+                            <h3 class="font-bold text-sm text-white">Watch & Earn</h3>
+                            <p class="text-[11px] text-slate-400">Watch ads and earn instant coins</p>
                         </div>
                     </div>
-                    <i class="fas fa-chevron-right text-slate-500"></i>
+                    <i class="fas fa-chevron-right text-slate-500 text-xs"></i>
                 </button>
 
-                <button onclick="switchTab('tasks')" class="glass-card p-4 rounded-2xl flex items-center justify-between hover:bg-white/10 transition group text-left">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
-                            <i class="fas fa-tasks"></i>
+                <!-- Bounty Tasks -->
+                <button onclick="switchTab('tasks')" class="card-item w-full p-3.5 rounded-2xl flex items-center justify-between hover:bg-[#1c243b] transition group text-left">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fas fa-list-check"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white">Channel Tasks</h3>
-                            <p class="text-xs text-slate-400">Join channels for 0.025 TON each</p>
+                            <h3 class="font-bold text-sm text-white">Bounty Tasks</h3>
+                            <p class="text-[11px] text-slate-400">Join channels & bots for rewards</p>
                         </div>
                     </div>
-                    <i class="fas fa-chevron-right text-slate-500"></i>
+                    <i class="fas fa-chevron-right text-slate-500 text-xs"></i>
                 </button>
 
-                <button onclick="openCampaignModal()" class="glass-card p-4 rounded-2xl flex items-center justify-between hover:bg-white/10 transition group text-left border-indigo-500/40">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
-                            <i class="fas fa-bullhorn"></i>
+                <!-- Create Campaign -->
+                <button onclick="openCampaignModal()" class="card-item w-full p-3.5 rounded-2xl flex items-center justify-between hover:bg-[#1c243b] transition group text-left">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fas fa-plus-circle"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-indigo-300">Create Campaign (Client)</h3>
-                            <p class="text-xs text-slate-400">Pay TON & auto-publish your link</p>
+                            <h3 class="font-bold text-sm text-white">Create Campaign</h3>
+                            <p class="text-[11px] text-slate-400">Promote channel via TON / Stars</p>
                         </div>
                     </div>
-                    <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-1 rounded-md">Boost</span>
+                    <span class="text-[10px] bg-indigo-600/30 text-indigo-300 font-medium px-2.5 py-1 rounded-lg border border-indigo-500/30">Boost</span>
                 </button>
 
-                <button onclick="openWithdrawModal()" class="glass-card p-4 rounded-2xl flex items-center justify-between hover:bg-white/10 transition group text-left border-emerald-500/40">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
-                            <i class="fas fa-hand-holding-dollar"></i>
+                <!-- Wallet & Assets -->
+                <button onclick="openWithdrawModal()" class="card-item w-full p-3.5 rounded-2xl flex items-center justify-between hover:bg-[#1c243b] transition group text-left">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fas fa-wallet"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-emerald-300">Withdraw Funds</h3>
-                            <p class="text-xs text-slate-400">Min 1 TON, 40 Ads & 40 Tasks required</p>
+                            <h3 class="font-bold text-sm text-white">Wallet & Assets</h3>
+                            <p class="text-[11px] text-slate-400">Manage earnings & withdrawals</p>
                         </div>
                     </div>
-                    <span class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-1 rounded-md">Rules</span>
+                    <i class="fas fa-chevron-right text-slate-500 text-xs"></i>
                 </button>
+
+                <!-- Leaderboard -->
+                <button onclick="switchTab('leaderboard')" class="card-item w-full p-3.5 rounded-2xl flex items-center justify-between hover:bg-[#1c243b] transition group text-left">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl shrink-0">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">Leaderboard</h3>
+                            <p class="text-[11px] text-slate-400">Top earners and rewards</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-slate-500 text-xs"></i>
+                </button>
+
             </div>
         </div>
 
         <!-- PROFILE TAB -->
         <div id="tab-profile" class="space-y-4 hidden">
-            <div class="glass-card p-6 rounded-2xl text-center space-y-3">
+            <div class="card-item p-6 rounded-2xl text-center space-y-3">
                 <div id="profile-avatar-large" class="w-20 h-20 rounded-full overflow-hidden bg-indigo-600 mx-auto flex items-center justify-center text-2xl font-bold border-2 border-indigo-400 shadow-xl">
                     <span id="profile-initial-large">U</span>
                 </div>
@@ -161,9 +188,10 @@
                     <h2 class="text-lg font-bold text-white" id="profile-name">Loading...</h2>
                     <p class="text-xs text-slate-400" id="profile-username">@username</p>
                 </div>
-                <div class="bg-slate-800/60 p-3 rounded-xl text-left space-y-2 text-xs">
+                <div class="bg-[#101524] p-3.5 rounded-xl text-left space-y-2 text-xs border border-slate-800">
                     <div class="flex justify-between"><span class="text-slate-400">Telegram ID:</span> <span id="profile-id" class="font-mono text-indigo-300">---</span></div>
                     <div class="flex justify-between"><span class="text-slate-400">Total Balance:</span> <span id="profile-balance" class="font-bold text-amber-400">0.000 TON</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Total Referrals:</span> <span id="profile-ref-count" class="font-bold text-pink-400">0</span></div>
                     <div class="flex justify-between"><span class="text-slate-400">Ads Watched:</span> <span id="profile-ads-count" class="font-bold text-blue-400">0 / 40</span></div>
                     <div class="flex justify-between"><span class="text-slate-400">Tasks Completed:</span> <span id="profile-tasks-count" class="font-bold text-purple-400">0 / 40</span></div>
                     <div class="flex justify-between"><span class="text-slate-400">Connected Wallet:</span> <span id="profile-wallet-address" class="font-mono text-emerald-400">Not Connected</span></div>
@@ -173,21 +201,45 @@
 
         <!-- TASKS TAB -->
         <div id="tab-tasks" class="space-y-3 hidden">
-            <h2 class="font-bold text-sm text-slate-300">Active Client Tasks (0.025 TON Each)</h2>
+            <h2 class="font-bold text-sm text-slate-300">Active Tasks (0.025 TON Each)</h2>
             <div id="tasks-list-container">
                 <p class="text-xs text-slate-400 text-center py-4">Loading tasks...</p>
             </div>
         </div>
 
+        <!-- LEADERBOARD TAB -->
+        <div id="tab-leaderboard" class="space-y-4 hidden">
+            <!-- Sub-tab Toggle Buttons -->
+            <div class="card-item p-1.5 rounded-xl flex space-x-2 bg-[#121724]">
+                <button id="btn-sub-ref" onclick="switchLeaderboardSubTab('referrals')" class="flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white transition">
+                    🏆 Top Referrers
+                </button>
+                <button id="btn-sub-earn" onclick="switchLeaderboardSubTab('earners')" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+                    💰 Top Earners
+                </button>
+            </div>
+
+            <!-- Leaderboard List Card -->
+            <div class="card-item p-4 rounded-2xl space-y-3">
+                <h3 class="font-bold text-sm text-indigo-300 flex items-center justify-between" id="leaderboard-title">
+                    <span>Top Referrers List</span>
+                    <span class="text-[10px] text-slate-400 font-normal">Live Rankings</span>
+                </h3>
+                <div id="leaderboard-list" class="space-y-2">
+                    <p class="text-xs text-slate-400 text-center py-4">Loading leaderboard...</p>
+                </div>
+            </div>
+        </div>
+
         <!-- REFERRAL TAB -->
         <div id="tab-referral" class="space-y-4 hidden">
-            <div class="glass-card p-5 rounded-2xl text-center space-y-3">
+            <div class="card-item p-5 rounded-2xl text-center space-y-3">
                 <h3 class="font-bold text-base text-indigo-300">Invite Friends & Earn</h3>
-                <p class="text-xs text-slate-400">Get 0.005 TON for every active friend you invite!</p>
-                <div class="bg-slate-800 p-3 rounded-xl text-xs text-slate-300 font-mono break-all" id="ref-link">
-                    https://t.me/socialpulseaig?start=ref_12345
+                <p class="text-xs text-slate-400">Get 0.05 TON for every active friend you invite!</p>
+                <div class="bg-[#101524] p-3 rounded-xl text-xs text-slate-300 font-mono break-all border border-slate-800" id="ref-link">
+                    https://t.me/mediaboostAiBot?start=ref_12345
                 </div>
-                <button onclick="copyRefLink()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-2.5 rounded-xl font-bold text-xs transition">
+                <button onclick="copyRefLink()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-2.5 rounded-xl font-bold text-xs transition text-white">
                     Copy Referral Link
                 </button>
             </div>
@@ -195,57 +247,55 @@
     </main>
 
     <!-- Campaign Modal -->
-    <div id="campaign-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="glass-card bg-slate-900 border border-slate-700 w-full max-w-sm p-6 rounded-2xl space-y-4">
+    <div id="campaign-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="card-item bg-[#161c2e] border border-slate-700 w-full max-w-sm p-6 rounded-2xl space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-lg text-indigo-300">Create Channel Campaign</h3>
+                <h3 class="font-bold text-base text-indigo-300">Create Channel Campaign</h3>
                 <button onclick="closeCampaignModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
             <div class="space-y-3">
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Channel / Group Link</label>
-                    <input type="text" id="camp-link" placeholder="https://t.me/yourchannel" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                    <input type="text" id="camp-link" placeholder="https://t.me/yourchannel" class="w-full bg-[#101524] border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Select Duration & Price</label>
-                    <select id="camp-duration" onchange="calculateCost()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
+                    <select id="camp-duration" onchange="calculateCost()" class="w-full bg-[#101524] border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500">
                         <option value="48">48 Hours (2 Days) - 1.0 TON</option>
                         <option value="168">1 Week (7 Days) - 3.5 TON</option>
                     </select>
                 </div>
-                <div class="bg-slate-800/50 p-3 rounded-xl space-y-1 text-xs">
+                <div class="bg-[#101524] p-3 rounded-xl space-y-1 text-xs border border-slate-800">
                     <div class="flex justify-between text-slate-400">
                         <span>Cost:</span>
                         <span class="font-bold text-emerald-400" id="camp-cost">1.0 TON</span>
                     </div>
                 </div>
             </div>
-            <button onclick="payAndPublishCampaign()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition text-sm">
+            <button onclick="payAndPublishCampaign()" class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition text-sm text-white">
                 Pay & Publish
             </button>
         </div>
     </div>
 
-    <!-- Withdrawal Modal -->
-    <div id="withdraw-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="glass-card bg-slate-900 border border-slate-700 w-full max-w-sm p-6 rounded-2xl space-y-4">
+    <!-- Withdrawal Modal (Wallet & Assets) -->
+    <div id="withdraw-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="card-item bg-[#161c2e] border border-slate-700 w-full max-w-sm p-6 rounded-2xl space-y-4 shadow-2xl">
             <div class="flex justify-between items-center">
-                <h3 class="font-bold text-lg text-emerald-300">Request Withdrawal</h3>
+                <h3 class="font-bold text-base text-emerald-300">Wallet & Assets / Withdrawal</h3>
                 <button onclick="closeWithdrawModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times"></i></button>
             </div>
             <div class="space-y-3">
-                <div class="bg-slate-800/80 p-3 rounded-xl space-y-1 text-xs">
+                <div class="bg-[#101524] p-3 rounded-xl space-y-1 text-xs border border-slate-800">
                     <div class="flex justify-between text-slate-300"><span>Balance:</span> <span id="modal-user-balance" class="text-amber-400 font-bold">0.000 TON</span></div>
-                    <div class="flex justify-between text-slate-300"><span>Ads Watched:</span> <span id="modal-ads-count" class="text-blue-400 font-bold">0 / 40</span></div>
-                    <div class="flex justify-between text-slate-300"><span>Tasks Completed:</span> <span id="modal-tasks-count" class="text-purple-400 font-bold">0 / 40</span></div>
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Amount to Withdraw (TON)</label>
-                    <input type="number" step="0.001" id="withdraw-amount" placeholder="Min 1.0 TON" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <input type="number" step="0.001" id="withdraw-amount" placeholder="Min 1.0 TON" class="w-full bg-[#101524] border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <div>
                     <label class="text-xs text-slate-400 block mb-1">Your TON Wallet Address</label>
-                    <input type="text" id="withdraw-wallet" placeholder="UQB..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <input type="text" id="withdraw-wallet" value="" placeholder="Connect your wallet first" class="w-full bg-[#101524] border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500" readonly>
                 </div>
             </div>
             <button onclick="submitWithdrawRequest()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-xl font-bold transition text-sm text-slate-950">
@@ -255,27 +305,31 @@
     </div>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 glass-card border-t border-slate-800 py-3 px-6 flex justify-around items-center bg-slate-900/95 backdrop-blur-md z-40">
+    <nav class="fixed bottom-0 left-0 right-0 border-t border-slate-800/80 py-2.5 px-6 flex justify-between items-center bg-[#0d111d]/95 backdrop-blur-md z-40">
+        
         <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center text-indigo-400 transition">
             <i class="fas fa-home text-lg"></i>
             <span class="text-[10px] mt-1 font-medium">Home</span>
         </button>
+
         <button onclick="switchTab('tasks')" id="nav-tasks" class="flex flex-col items-center text-slate-400 hover:text-white transition">
             <i class="fas fa-list-check text-lg"></i>
             <span class="text-[10px] mt-1 font-medium">Tasks</span>
         </button>
+
         <button onclick="switchTab('referral')" id="nav-referral" class="flex flex-col items-center text-slate-400 hover:text-white transition relative">
-            <span class="absolute -top-1 -right-2 bg-pink-500 text-[8px] px-1 rounded-full text-white">New</span>
-            <i class="fas fa-users text-lg"></i>
+            <span class="absolute -top-1.5 -right-2 bg-pink-500 text-[8px] px-1.5 py-0.2 rounded-full text-white font-bold">New</span>
+            <i class="fas fa-user-group text-lg"></i>
             <span class="text-[10px] mt-1 font-medium">Referral</span>
         </button>
+
         <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-slate-400 hover:text-white transition">
             <i class="fas fa-user text-lg"></i>
             <span class="text-[10px] mt-1 font-medium">Profile</span>
         </button>
     </nav>
 
-    <!-- Core App Logic & TON Connect Integration -->
+    <!-- Core App Logic -->
     <script>
         // 1. Firebase Initialization
         const firebaseConfig = {
@@ -290,10 +344,10 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Admin Binance TON Wallet Address for Campaign payments
         const ADMIN_TON_ADDRESS = "UQC_uwp-fGIO5qwRgGKe0ymORn-Cd-pW_HtBVbHD-NPzIVfq";
+        const CHANNEL_URL = "https://t.me/mediaboostAi";
+        const BOT_USERNAME = "mediaboostAiBot";
 
-        // Telegram WebApp User Setup
         const tg = window.Telegram.WebApp;
         tg.expand();
 
@@ -305,6 +359,7 @@
             balance: 0.000,
             total_ads: 0,
             total_tasks: 0,
+            total_referrals: 0,
             wallet: ""
         };
 
@@ -335,8 +390,10 @@
                 
                 db.ref('users/' + currentUser.id).update({ wallet: rawAddress });
             } else {
+                currentUser.wallet = "";
                 document.getElementById('wallet-label-status').innerText = "Wallet Not Connected";
                 document.getElementById('profile-wallet-address').innerText = "Not Connected";
+                document.getElementById('withdraw-wallet').value = "";
             }
         });
 
@@ -345,7 +402,7 @@
             document.getElementById('profile-name').innerText = currentUser.first_name;
             document.getElementById('profile-username').innerText = currentUser.username;
             document.getElementById('profile-id').innerText = currentUser.id;
-            document.getElementById('ref-link').innerText = `https://t.me/socialpulseaig?start=${currentUser.id}`;
+            document.getElementById('ref-link').innerText = `https://t.me/${BOT_USERNAME}?start=${currentUser.id}`;
 
             if (currentUser.photo_url) {
                 document.getElementById('user-avatar-container').innerHTML = `<img src="${currentUser.photo_url}" class="w-full h-full object-cover">`;
@@ -363,12 +420,15 @@
                     currentUser.balance = data.balance || 0.000;
                     currentUser.total_ads = data.total_ads || 0;
                     currentUser.total_tasks = data.total_tasks || 0;
+                    currentUser.total_referrals = data.total_referrals || 0;
                     if(data.wallet) {
                         currentUser.wallet = data.wallet;
                         document.getElementById('withdraw-wallet').value = currentUser.wallet;
                         document.getElementById('profile-wallet-address').innerText = currentUser.wallet.slice(0, 4) + '...' + currentUser.wallet.slice(-4);
                     }
                 } else {
+                    const startParam = tg.initDataUnsafe && tg.initDataUnsafe.start_param ? tg.initDataUnsafe.start_param : "";
+                    
                     userRef.set({
                         name: currentUser.first_name,
                         username: currentUser.username,
@@ -376,9 +436,26 @@
                         balance: 0.000,
                         total_ads: 0,
                         total_tasks: 0,
+                        total_referrals: 0,
                         wallet: "",
+                        referred_by: startParam,
                         joined_at: Date.now()
                     });
+
+                    if (startParam && startParam !== currentUser.id) {
+                        const referrerRef = db.ref('users/' + startParam);
+                        referrerRef.once('value').then(refSnap => {
+                            if (refSnap.exists()) {
+                                let refData = refSnap.val();
+                                let updatedBalance = (refData.balance || 0) + 0.05;
+                                let updatedRefCount = (refData.total_referrals || 0) + 1;
+                                referrerRef.update({
+                                    balance: updatedBalance,
+                                    total_referrals: updatedRefCount
+                                });
+                            }
+                        });
+                    }
                 }
                 updateUIStats();
             });
@@ -394,18 +471,36 @@
             
             document.getElementById('profile-ads-count').innerText = `${currentUser.total_ads} / 40`;
             document.getElementById('profile-tasks-count').innerText = `${currentUser.total_tasks} / 40`;
-            document.getElementById('modal-ads-count').innerText = `${currentUser.total_ads} / 40`;
-            document.getElementById('modal-tasks-count').innerText = `${currentUser.total_tasks} / 40`;
+            document.getElementById('profile-ref-count').innerText = currentUser.total_referrals || 0;
         }
 
         // --- Channel Verification Logic ---
+        let joinedClicked = false;
+
+        function joinChannel() {
+            joinedClicked = true;
+            localStorage.setItem('channel_joined_clicked', 'true');
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink(CHANNEL_URL);
+            } else {
+                window.open(CHANNEL_URL, '_blank');
+            }
+        }
+
         function checkSubscription() {
+            const hasClicked = joinedClicked || localStorage.getItem('channel_joined_clicked'] === 'true';
+            
+            if (!hasClicked) {
+                alert("Please click 'Join Channel' first to join our official channel!");
+                return;
+            }
+
             localStorage.setItem('channel_verified', 'true');
             document.getElementById('verify-modal').classList.add('hidden');
             alert("Verification successful! Welcome.");
         }
 
-        // --- Watch & Earn Logic ---
+        // --- Watch & Earn Logic (Updated with warning notification if ad is closed early without visit) ---
         let adTriggered = false;
 
         function handleAction(type) {
@@ -419,14 +514,11 @@
             }
         }
 
-        // When user returns back to the mini app tab after viewing the ad
         document.addEventListener("visibilitychange", function() {
             if (document.visibilityState === "visible" && adTriggered) {
                 adTriggered = false;
-                setTimeout(() => {
-                    currentUser.total_ads += 1;
-                    addReward(0.001, 'ad');
-                }, 2500);
+                // আপডেট করা নোটিফিকেশন: ইউজার ক্রস বাটন দিয়ে ফিরে আসলে তাকে অ্যাড ভিজিট করার নির্দেশ দেওয়া হবে এবং রিওয়ার্ড দেওয়া হবে না যতক্ষণ না সে ভিজিট করে।
+                alert("⚠️ রিওয়ার্ড অ্যাড সফলভাবে যোগ হওয়ার জন্য সম্পূর্ণ অ্যাডটি দেখা এবং অ্যাডটির ভেতরে ক্লিক করে ভিজিট করা আবশ্যক। দয়া করে নিয়ম মেনে সম্পূর্ণ অ্যাডটি ভিজিট করে আসুন।");
             }
         });
 
@@ -441,17 +533,105 @@
             alert(`Task completed successfully! Earned +${amount} TON.`);
         }
 
+        // Navigation Tab Switch
         function switchTab(tabName) {
-            ['home', 'tasks', 'referral', 'profile'].forEach(tab => {
-                document.getElementById('tab-' + tab).classList.add('hidden');
-                document.getElementById('nav-' + tab).classList.remove('text-indigo-400');
-                document.getElementById('nav-' + tab).classList.add('text-slate-400');
+            ['home', 'tasks', 'leaderboard', 'referral', 'profile'].forEach(tab => {
+                const element = document.getElementById('tab-' + tab);
+                if(element) element.classList.add('hidden');
+                
+                const navElement = document.getElementById('nav-' + tab);
+                if(navElement) {
+                    navElement.classList.remove('text-indigo-400');
+                    navElement.classList.add('text-slate-400');
+                }
             });
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            document.getElementById('nav-' + tabName).classList.add('text-indigo-400');
-            document.getElementById('nav-' + tabName).classList.remove('text-slate-400');
+
+            const targetTab = document.getElementById('tab-' + tabName);
+            if(targetTab) targetTab.classList.remove('hidden');
+
+            const targetNav = document.getElementById('nav-' + tabName);
+            if(targetNav) {
+                targetNav.classList.add('text-indigo-400');
+                targetNav.classList.remove('text-slate-400');
+            }
             
             if(tabName === 'tasks') loadTasks();
+            if(tabName === 'leaderboard') loadLeaderboardData();
+        }
+
+        // --- Leaderboard Sub-tab System ---
+        let currentLeaderboardType = 'referrals';
+
+        function switchLeaderboardSubTab(type) {
+            currentLeaderboardType = type;
+            const refBtn = document.getElementById('btn-sub-ref');
+            const earnBtn = document.getElementById('btn-sub-earn');
+            const title = document.getElementById('leaderboard-title');
+
+            if (type === 'referrals') {
+                refBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white transition";
+                earnBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition";
+                title.querySelector('span').innerText = "Top Referrers List";
+            } else {
+                earnBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-indigo-600 text-white transition";
+                refBtn.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition";
+                title.querySelector('span').innerText = "Top Earners List";
+            }
+            loadLeaderboardData();
+        }
+
+        function loadLeaderboardData() {
+            const listContainer = document.getElementById('leaderboard-list');
+            listContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">Loading rankings...</p>';
+
+            const orderByField = currentLeaderboardType === 'referrals' ? 'total_referrals' : 'balance';
+            
+            db.ref('users').orderByChild(orderByField).limitToLast(15).once('value').then(snapshot => {
+                listContainer.innerHTML = '';
+                if (!snapshot.exists()) {
+                    listContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">No data available yet.</p>';
+                    return;
+                }
+
+                let usersList = [];
+                snapshot.forEach(child => {
+                    usersList.push(child.val());
+                });
+
+                usersList.reverse();
+
+                usersList.forEach((u, index) => {
+                    const rank = index + 1;
+                    let rankBadge = `#${rank}`;
+                    let badgeClass = "text-slate-400 font-mono";
+
+                    if (rank === 1) { rankBadge = '🥇'; badgeClass = "text-yellow-400 text-base"; }
+                    else if (rank === 2) { rankBadge = '🥈'; badgeClass = "text-slate-300 text-base"; }
+                    else if (rank === 3) { rankBadge = '🥉'; badgeClass = "text-amber-600 text-base"; }
+
+                    const valueDisplay = currentLeaderboardType === 'referrals' 
+                        ? `<span class="text-pink-400 font-bold">${u.total_referrals || 0} Ref</span>`
+                        : `<span class="text-amber-400 font-bold">${(u.balance || 0).toFixed(3)} TON</span>`;
+
+                    const uName = u.name || "Anonymous User";
+                    const uHandle = u.username || "@user";
+
+                    listContainer.innerHTML += `
+                        <div class="card-item p-3 rounded-xl flex items-center justify-between border-slate-800">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-7 font-bold text-center ${badgeClass}">${rankBadge}</div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white">${uName}</h4>
+                                    <p class="text-[10px] text-slate-400">${uHandle}</p>
+                                </div>
+                            </div>
+                            <div class="text-xs">
+                                ${valueDisplay}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
         }
 
         function openCampaignModal() { document.getElementById('campaign-modal').classList.remove('hidden'); }
@@ -518,12 +698,12 @@
                     if(task.active) {
                         hasTasks = true;
                         container.innerHTML += `
-                            <div class="glass-card p-4 rounded-xl flex items-center justify-between mt-2">
+                            <div class="card-item p-4 rounded-xl flex items-center justify-between mt-2">
                                 <div>
                                     <h4 class="text-xs font-bold text-white">Join Channel</h4>
                                     <p class="text-[10px] text-slate-400">+0.025 TON Reward</p>
                                 </div>
-                                <button onclick="completeClientTask('${task.link}')" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-medium transition">Join & Claim</button>
+                                <button onclick="completeClientTask('${task.link}')" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-medium transition text-white">Join & Claim</button>
                             </div>
                         `;
                     }
@@ -551,12 +731,20 @@
             const amount = parseFloat(document.getElementById('withdraw-amount').value);
             const wallet = document.getElementById('withdraw-wallet').value;
             
-            if (currentUser.balance < 1.0 || currentUser.total_ads < 40 || currentUser.total_tasks < 40) {
-                alert(`Withdrawal requirements not met!\n\n- Balance required: Min 1.0 TON (Current: ${currentUser.balance.toFixed(3)})\n- Ads watched required: 40 (Current: ${currentUser.total_ads})\n- Tasks completed required: 40 (Current: ${currentUser.total_tasks})`);
+            const requiredAds = 40;
+            const requiredTasks = 40;
+
+            if (currentUser.total_ads < requiredAds || currentUser.total_tasks < requiredTasks) {
+                alert(`দয়া করে আপনি ${requiredAds} টি অ্যাড এবং ${requiredTasks} টি টাস্ক দেখা পূরণ করুন। তারপর উইথড্র করুন।`);
                 return;
             }
 
-            if(!amount || !wallet || amount < 1.0 || amount > currentUser.balance) {
+            if (!wallet) {
+                alert("দয়া করে প্রথমে আপনার ওয়ালেট কানেক্ট করুন।");
+                return;
+            }
+
+            if(!amount || amount < 1.0 || amount > currentUser.balance) {
                 alert("Invalid amount or insufficient balance! Minimum withdrawal is 1.0 TON.");
                 return;
             }
