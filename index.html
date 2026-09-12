@@ -15,11 +15,11 @@
     <!-- TON Connect UI SDK -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 
-    <!-- Monetag SDK -->
-    <script src='//libtl.com/sdk.js' data-zone='11759773' data-sdk='show_11759773'></script>
-
-    <!-- AdsGram SDK -->
+    <!-- AdsGram SDK (Primary Ad) -->
     <script src="https://sad.adsgram.ai/js/adsgram.min.js"></script>
+
+    <!-- Monetag SDK (Fallback Ad) -->
+    <script src='//libtl.com/sdk.js' data-zone='11759773' data-sdk='show_11759773'></script>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -342,9 +342,11 @@
         const ADMIN_TON_ADDRESS = "UQC_uwp-fGIO5qwRgGKe0ymORn-Cd-pW_HtBVbHD-NPzIVfq";
         const CHANNEL_URL = "https://t.me/mediaboostAi";
         const BOT_USERNAME = "mediaboostAiBot";
+        const ADSGRAM_BLOCK_ID = "47529"; // আপনার কনফার্মড ব্লক আইডি
 
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.ready();
 
         let currentUser = {
             id: "guest_" + Math.floor(Math.random() * 100000),
@@ -385,7 +387,7 @@
 
         renderUserHeaderAndProfile();
 
-        // Fixed TON Connect Integration
+        // TON Connect Integration
         let tonConnectUI = null;
         try {
             tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
@@ -422,7 +424,7 @@
 
         function initUserData() {
             const userRef = db.ref('users/' + currentUser.id);
-            userRef.once('value').then((snapshot) => {
+            userRef.on('value', (snapshot) => {
                 const walletInput = document.getElementById('withdraw-wallet');
                 if (snapshot.exists()) {
                     let data = snapshot.val();
@@ -455,11 +457,8 @@
                         const referrerRef = db.ref('users/' + startParam);
                         referrerRef.once('value').then(refSnap => {
                             if (refSnap.exists()) {
-                                let refData = refSnap.val();
-                                referrerRef.update({
-                                    balance: (refData.balance || 0) + 0.05,
-                                    total_referrals: (refData.total_referrals || 0) + 1
-                                });
+                                referrerRef.child('balance').set(firebase.database.ServerValue.increment(0.05));
+                                referrerRef.child('total_referrals').set(firebase.database.ServerValue.increment(1));
                             }
                         });
                     }
@@ -503,99 +502,89 @@
             alert("Verification successful! Welcome.");
         }
 
-        // AdsGram Controller Initialization with Block ID 47529
+        // AdsGram Initialization Logic
         let adsgramController = null;
-        try {
+        function initAdsgram() {
             if (window.Adsgram) {
-                adsgramController = window.Adsgram.init({ blockId: "47529" });
+                try {
+                    // String/Number দুই স্ট্রাকচারেই সাপোর্ট নিশ্চিত করা হলো
+                    adsgramController = window.Adsgram.init({ blockId: String(ADSGRAM_BLOCK_ID) });
+                } catch (e) {
+                    console.log("Adsgram init warning:", e);
+                }
             }
-        } catch (e) {
-            console.log("Adsgram init warning:", e);
         }
 
-        // Updated Ad Watch Logic with AdsGram + Monetag Fallback Integration
-        let adActive = false;
-        let adVisitTime = 0;
-        let visitedLandingPage = false;
-
-        window.addEventListener('blur', () => {
-            if (adActive) {
-                visitedLandingPage = true;
-                adVisitTime = Date.now();
-            }
+        window.addEventListener('DOMContentLoaded', () => {
+            initAdsgram();
         });
 
+        // Safe Ad Watch Flow (AdsGram -> Monetag Fallback Waterfall with 10-sec delay)
         async function handleAction(type) {
-            if (type === 'watch_ad') {
-                adActive = true;
-                visitedLandingPage = false;
-                adVisitTime = 0;
-
-                let adSuccess = false;
-
-                // ১. প্রথমে AdsGram অ্যাড দেখানোর চেষ্টা করবে
-                try {
-                    if (adsgramController) {
-                        const result = await adsgramController.show();
-                        adSuccess = true;
-                        grantAdReward();
-                    }
-                } catch (err) {
-                    console.log("AdsGram ad failed or unavailable, trying Monetag...", err);
-                }
-
-                // ২. AdsGram ব্যর্থ হলে Monetag (show_11759773) ট্রাই করবে
-                if (!adSuccess) {
-                    try {
-                        if (typeof show_11759773 === 'function') {
-                            show_11759773().catch(() => {});
-                        }
-
-                        // টাইমআউট ও ল্যান্ডিং পেজ ভেরিফিকেশন লজিক
-                        setTimeout(() => {
-                            if (!adActive) return;
-                            
-                            if (visitedLandingPage) {
-                                grantAdReward();
-                            } else {
-                                alert("⚠️ Warning: You must click and visit the ad page for at least 2-3 seconds to get your reward!");
-                            }
-                            adActive = false;
-                            visitedLandingPage = false;
-                        }, 12000);
-                        return; // Monetag সফল হলে এখানেই শেষ
-                    } catch (mErr) {
-                        console.log("Monetag failed as well:", mErr);
-                        alert("দুঃখিত, এই মুহূর্তে কোনো অ্যাড উপলব্ধ নেই। কিছুক্ষণ পর আবার চেষ্টা করুন।");
-                    }
-                }
-
-                adActive = false;
-            } else {
+            if (type !== 'watch_ad') {
                 alert("Feature coming soon!");
+                return;
+            }
+
+            let adSuccess = false;
+
+            // ১. প্রথম চেষ্টা: AdsGram
+            try {
+                if (!adsgramController && window.Adsgram) {
+                    initAdsgram();
+                }
+
+                if (adsgramController) {
+                    const result = await adsgramController.show();
+                    if (result && (result.done || result.state === 'completed')) {
+                        adSuccess = true;
+                        alert("Ad completed! Please wait 10 seconds for reward verification...");
+                        setTimeout(() => {
+                            grantAdReward(0.01);
+                        }, 10000);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log("AdsGram skipped/failed. Switching to Monetag fallback...", err);
+            }
+
+            // ২. দ্বিতীয় চেষ্টা (Fallback): Monetag
+            if (!adSuccess) {
+                try {
+                    if (typeof show_11759773 === 'function') {
+                        show_11759773().then(() => {
+                            alert("Ad completed! Please wait 10 seconds for reward verification...");
+                            setTimeout(() => {
+                                grantAdReward(0.01);
+                            }, 10000);
+                        }).catch((e) => {
+                            alert("বিজ্ঞাপন দেখা সম্পন্ন হয়নি বা বাতিল করা হয়েছে।");
+                        });
+                    } else {
+                        alert("এই মুহূর্তে কোনো বিজ্ঞাপন উপলব্ধ নেই। অনুগ্রহ করে কিছু পরে আবার চেষ্টা করুন।");
+                    }
+                } catch (mErr) {
+                    console.log("Monetag failed:", mErr);
+                    alert("বিজ্ঞাপন লোড করতে সমস্যা হয়েছে।");
+                }
             }
         }
 
-        function grantAdReward() {
-            currentUser.total_ads += 1;
-            currentUser.balance += 0.01;
-            updateUIStats();
-            db.ref('users/' + currentUser.id).update({ 
-                balance: currentUser.balance,
-                total_ads: currentUser.total_ads,
-                total_tasks: currentUser.total_tasks
-            });
-            alert(`Task completed successfully! Earned +0.01 TON.`);
+        // নিরাপদ রিওয়ার্ড সিস্টেম
+        function grantAdReward(amount) {
+            const userRef = db.ref('users/' + currentUser.id);
+            userRef.child('balance').set(firebase.database.ServerValue.increment(amount));
+            userRef.child('total_ads').set(firebase.database.ServerValue.increment(1));
+            
+            alert(`Task completed successfully! Earned +${amount} TON.`);
         }
 
         function addReward(amount) {
-            currentUser.balance += amount;
-            updateUIStats();
-            db.ref('users/' + currentUser.id).update({ 
-                balance: currentUser.balance,
-                total_ads: currentUser.total_ads,
-                total_tasks: currentUser.total_tasks
-            });
+            const userRef = db.ref('users/' + currentUser.id);
+            userRef.child('balance').set(firebase.database.ServerValue.increment(amount));
+            userRef.child('total_tasks').set(firebase.database.ServerValue.increment(1));
+
             alert(`Task completed successfully! Earned +${amount} TON.`);
         }
 
@@ -717,12 +706,18 @@
 
             try {
                 await tonConnectUI.sendTransaction(transaction);
+                
+                // মেয়াদের সময় সেট করে দেওয়া হলো
+                const durationHours = parseInt(duration);
+                const expireAt = Date.now() + (durationHours * 3600 * 1000);
+
                 db.ref('campaigns').push({ 
                     user_id: currentUser.id, 
                     link: link, 
-                    duration: duration,
+                    duration: durationHours,
                     active: true,
-                    timestamp: Date.now() 
+                    timestamp: Date.now(),
+                    expire_at: expireAt
                 });
                 closeCampaignModal();
                 alert("Payment successful! Published to Tasks.");
@@ -735,11 +730,22 @@
 
         function loadTasks() {
             const container = document.getElementById('tasks-list-container');
+            const now = Date.now();
+
             db.ref('campaigns').once('value').then(snapshot => {
                 container.innerHTML = '';
                 let hasTasks = false;
+
                 snapshot.forEach(child => {
+                    let taskKey = child.key;
                     let task = child.val();
+
+                    // মেয়াদী কাজ ডিঅ্যাক্টিভ করা
+                    if (task.expire_at && task.expire_at < now) {
+                        db.ref('campaigns/' + taskKey).update({ active: false });
+                        return;
+                    }
+
                     if(task.active) {
                         hasTasks = true;
                         container.innerHTML += `
@@ -748,7 +754,7 @@
                                     <h4 class="text-xs font-bold text-white">Join Channel</h4>
                                     <p class="text-[10px] text-slate-400">+0.025 TON Reward</p>
                                 </div>
-                                <button onclick="completeClientTask('${task.link}')" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-medium transition text-white shadow">Join & Claim</button>
+                                <button onclick="completeClientTask('${task.link}', '${taskKey}')" class="bg-indigo-600 hover:bg-indigo-500 text-xs px-3 py-1.5 rounded-lg font-medium transition text-white shadow">Join & Claim</button>
                             </div>
                         `;
                     }
@@ -759,13 +765,16 @@
             });
         }
 
-        function completeClientTask(link) {
-            window.open(link, '_blank');
+        function completeClientTask(link, taskKey) {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink(link);
+            } else {
+                window.open(link, '_blank');
+            }
+
             setTimeout(() => {
-                currentUser.total_tasks += 1;
                 addReward(0.025);
-                loadTasks();
-            }, 5000);
+            }, 4000);
         }
 
         function openWithdrawModal() { 
@@ -806,24 +815,36 @@
                 return;
             }
 
-            if (amount > currentUser.balance) {
-                alert("Insufficient balance.");
-                return;
-            }
+            // রিয়েল-টাইমে ডাটাবেজ থেকে রি-চেক (Security Fix)
+            db.ref('users/' + currentUser.id).once('value').then(snapshot => {
+                if(!snapshot.exists()) return;
+                const dbUser = snapshot.val();
 
-            db.ref('withdrawals').push({ 
-                user_id: currentUser.id, 
-                amount: amount, 
-                wallet: wallet, 
-                status: "Pending", 
-                timestamp: Date.now() 
+                if (amount > dbUser.balance) {
+                    alert("Insufficient balance.");
+                    return;
+                }
+
+                // উইথড্র রেকর্ড সেভ
+                db.ref('withdrawals').push({ 
+                    user_id: currentUser.id, 
+                    amount: amount, 
+                    wallet: wallet, 
+                    status: "Pending", 
+                    timestamp: Date.now() 
+                });
+
+                // ডাটাবেজে ব্যালেন্স কমানো এবং টাস্ক/অ্যাড কাউন্টার রিসেট
+                const newBalance = dbUser.balance - amount;
+                db.ref('users/' + currentUser.id).update({
+                    balance: newBalance,
+                    total_ads: 0,
+                    total_tasks: 0
+                });
+
+                closeWithdrawModal();
+                alert("✅ Withdrawal request submitted successfully!");
             });
-
-            currentUser.balance -= amount;
-            updateUIStats();
-            db.ref('users/' + currentUser.id).update({ balance: currentUser.balance });
-            closeWithdrawModal();
-            alert("✅ Withdrawal request submitted successfully!");
         }
 
         function copyRefLink() {
