@@ -8,6 +8,16 @@
     />
     <title>ToBOOSTAi - Telegram Web3 Bounty & Tasks</title>
 
+<!-- 🌟 Open Graph / Telegram Banner Meta Tags 🌟 -->
+    <meta property="og:title" content="ToBOOSTAi - Official Web3 App" />
+    <meta property="og:description" content="Boost your social media & complete bounties! Earn Star PTS and win $GRAM tokens." />
+    <meta property="og:image" content="https://i.postimg.cc/05HmbvhS/82996.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ToBOOSTAi - Official Web3 App" />
+    <meta name="twitter:description" content="Boost your social media & complete bounties! Earn Star PTS and win $GRAM tokens." />
+    <meta name="twitter:image" content="https://i.postimg.cc/05HmbvhS/82996.png" />
+
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
@@ -370,75 +380,65 @@
       const Coin3DIcon = ({
         size = 36,
         className = '',
-        floating = false,
-        glow = false,
+        floating = true,
+        glow = true,
         idPrefix = 'toboost-blue',
       }) => {
         const outerRim = `${idPrefix}-outer-rim`;
         const bevelLight = `${idPrefix}-bevel-light`;
         const dishedConcave = `${idPrefix}-dished-concave`;
-        const dishedInnerShadow = `${idPrefix}-dished-inner-shadow`;
         const starFacetLight = `${idPrefix}-star-light`;
         const starFacetMid = `${idPrefix}-star-mid`;
         const starFacetDark = `${idPrefix}-star-dark`;
-        const starFacetDeep = `${idPrefix}-star-deep`;
-        const coinShadow = `${idPrefix}-coin-shadow`;
+        const starGlow = `${idPrefix}-star-glow`;
 
         return (
           <div
             className={`inline-flex items-center justify-center shrink-0 ${floating ? 'animate-coin-float' : ''} ${glow ? 'animate-coin-glow' : ''} ${className}`}
             style={{ width: size, height: size }}
           >
-            <svg viewBox="0 0 100 100" width="100%" height="100%" className="w-full h-full overflow-visible drop-shadow-md">
+            <svg viewBox="0 0 100 100" width="100%" height="100%" className="w-full h-full overflow-visible drop-shadow-[0_2px_8px_rgba(56,189,248,0.35)]">
               <defs>
-                <filter id={coinShadow} x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow dx="0" dy="3.5" stdDeviation="3" floodColor="#0284c7" floodOpacity="0.5" />
-                </filter>
                 <linearGradient id={outerRim} x1="15%" y1="10%" x2="85%" y2="90%">
-                  <stop offset="0%" stopColor="#E0F2FE" /><stop offset="20%" stopColor="#7DD3FC" /><stop offset="50%" stopColor="#0284C7" /><stop offset="78%" stopColor="#0369A1" /><stop offset="100%" stopColor="#075985" />
+                  <stop offset="0%" stopColor="#E0F2FE" /><stop offset="25%" stopColor="#38BDF8" /><stop offset="50%" stopColor="#0284C7" /><stop offset="85%" stopColor="#0369A1" /><stop offset="100%" stopColor="#075985" />
                 </linearGradient>
                 <linearGradient id={bevelLight} x1="10%" y1="10%" x2="90%" y2="90%">
-                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.9" /><stop offset="35%" stopColor="#BAE6FD" stopOpacity="0.5" /><stop offset="70%" stopColor="#0369A1" stopOpacity="0.3" /><stop offset="100%" stopColor="#082F49" stopOpacity="0.8" />
+                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.95" /><stop offset="40%" stopColor="#BAE6FD" stopOpacity="0.6" /><stop offset="100%" stopColor="#082F49" stopOpacity="0.8" />
                 </linearGradient>
                 <radialGradient id={dishedConcave} cx="46%" cy="38%" r="62%">
-                  <stop offset="0%" stopColor="#082F49" /><stop offset="30%" stopColor="#0C4A6E" /><stop offset="65%" stopColor="#0369A1" /><stop offset="85%" stopColor="#0284C7" /><stop offset="97%" stopColor="#7DD3FC" /><stop offset="100%" stopColor="#E0F2FE" />
+                  <stop offset="0%" stopColor="#0284C7" /><stop offset="45%" stopColor="#0369A1" /><stop offset="85%" stopColor="#075985" /><stop offset="100%" stopColor="#082F49" />
                 </radialGradient>
-                <linearGradient id={dishedInnerShadow} x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#082F49" stopOpacity="0.7" /><stop offset="50%" stopColor="#0C4A6E" stopOpacity="0.2" /><stop offset="100%" stopColor="#F0F9FF" stopOpacity="0.6" />
-                </linearGradient>
                 <linearGradient id={starFacetLight} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FFFFFF" /><stop offset="40%" stopColor="#E0F2FE" /><stop offset="100%" stopColor="#BAE6FD" />
+                  <stop offset="0%" stopColor="#FFFFFF" /><stop offset="50%" stopColor="#F0F9FF" /><stop offset="100%" stopColor="#BAE6FD" />
                 </linearGradient>
                 <linearGradient id={starFacetMid} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#BAE6FD" /><stop offset="100%" stopColor="#38BDF8" />
+                  <stop offset="0%" stopColor="#E0F2FE" /><stop offset="60%" stopColor="#BAE6FD" /><stop offset="100%" stopColor="#7DD3FC" />
                 </linearGradient>
                 <linearGradient id={starFacetDark} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#0284C7" /><stop offset="100%" stopColor="#0369A1" />
+                  <stop offset="0%" stopColor="#7DD3FC" /><stop offset="60%" stopColor="#38BDF8" /><stop offset="100%" stopColor="#0284C7" />
                 </linearGradient>
-                <linearGradient id={starFacetDeep} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#075985" /><stop offset="100%" stopColor="#0C4A6E" />
-                </linearGradient>
+                <filter id={starGlow} x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="1.5" result="glow" />
+                  <feComposite in="SourceGraphic" in2="glow" operator="over" />
+                </filter>
               </defs>
-              <circle cx="50" cy="50" r="46" fill={`url(#${outerRim})`} filter={`url(#${coinShadow})`} />
+              <circle cx="50" cy="50" r="46" fill={`url(#${outerRim})`} />
               <circle cx="50" cy="50" r="45.5" fill="none" stroke={`url(#${bevelLight})`} strokeWidth="1.5" />
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#082F49" strokeOpacity="0.4" strokeWidth="1" />
               <circle cx="50" cy="50" r="38.5" fill={`url(#${dishedConcave})`} />
-              <circle cx="50" cy="50" r="38.5" fill="none" stroke={`url(#${dishedInnerShadow})`} strokeWidth="2.5" />
-              <circle cx="50" cy="50" r="34" fill="none" stroke="#F0F9FF" strokeWidth="1.2" strokeDasharray="2 3" strokeOpacity="0.75" />
-              <g id="faceted-star">
+              <circle cx="50" cy="50" r="34" fill="none" stroke="#BAE6FD" strokeWidth="1" strokeDasharray="2 3" strokeOpacity="0.8" />
+              <g id="faceted-star" filter={`url(#${starGlow})`}>
                 <polygon points="50,50 50,26 44.1,41.9" fill={`url(#${starFacetLight})`} />
                 <polygon points="50,50 50,26 55.9,41.9" fill={`url(#${starFacetMid})`} />
                 <polygon points="50,50 72.8,42.6 55.9,41.9" fill={`url(#${starFacetMid})`} />
                 <polygon points="50,50 72.8,42.6 59.5,53.1" fill={`url(#${starFacetDark})`} />
                 <polygon points="50,50 64.1,69.4 59.5,53.1" fill={`url(#${starFacetDark})`} />
-                <polygon points="50,50 64.1,69.4 50,60" fill={`url(#${starFacetDeep})`} />
-                <polygon points="50,50 35.9,69.4 50,60" fill={`url(#${starFacetDeep})`} />
+                <polygon points="50,50 64.1,69.4 50,60" fill={`url(#${starFacetLight})`} />
+                <polygon points="50,50 35.9,69.4 50,60" fill={`url(#${starFacetLight})`} />
                 <polygon points="50,50 35.9,69.4 40.5,53.1" fill={`url(#${starFacetMid})`} />
                 <polygon points="50,50 27.2,42.6 40.5,53.1" fill={`url(#${starFacetLight})`} />
                 <polygon points="50,50 27.2,42.6 44.1,41.9" fill={`url(#${starFacetLight})`} />
               </g>
-              <circle cx="49.5" cy="48.5" r="3" fill="#FFFFFF" fillOpacity="0.9" />
-              <circle cx="47" cy="32" r="1.8" fill="#FFFFFF" fillOpacity="0.95" />
+              <circle cx="50" cy="50" r="2.5" fill="#FFFFFF" />
             </svg>
           </div>
         );
@@ -573,49 +573,49 @@
         );
       };
 
-      // Slim Dynamic Balance Card ($GRAM Pill Text Smaller)
       const DynamicBalanceCard = ({ starBalance, tokenBalance, dict }) => {
         const formattedStars = starBalance.toLocaleString();
         const displayGram = tokenBalance.toFixed(3);
 
         return (
           <div className="w-full">
-            <div className="relative overflow-hidden rounded-[16px] bg-gradient-to-r from-white via-white to-sky-50/95 border border-white shadow-[0_2px_8px_rgba(56,189,248,0.06)] px-3.5 py-2">
-              <div className="flex items-center justify-between gap-2 mb-1">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap">
+            <div className="relative overflow-hidden rounded-[15px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] px-3.5 py-2">
+              
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <span className="text-[9.5px] font-extrabold uppercase tracking-widest text-slate-400">
                   {dict.totalBalance}
                 </span>
                 
-                <div className="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 shrink-0">
+                <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 shrink-0">
                   <Icons.ShieldCheck className="w-3.5 h-3.5" />
                   <span>{dict.verified}</span>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-2.5">
+              <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="relative flex items-center justify-center shrink-0">
-                    <Coin3DIcon size={36} idPrefix="balance-main" floating={true} glow={true} />
-                  </div>
-                  <div className="flex items-baseline gap-1 flex-wrap">
-                    <span className="font-display font-extrabold text-[23px] text-slate-900 tracking-tight tabular-nums leading-none">
+                  <Coin3DIcon size={36} idPrefix="balance-main" floating={true} glow={true} />
+                  
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="font-display font-extrabold text-[24px] sm:text-[26px] text-slate-900 tracking-normal tabular-nums leading-none">
                       {formattedStars}
                     </span>
-                    <span className="text-[12px] font-extrabold text-sky-600">PTS</span>
-                    
-                    {/* Small Elegant $GRAM Badge */}
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full bg-sky-100/90 text-sky-800 text-[9.5px] font-extrabold border border-sky-200/70 ml-1">
-                      ≈ {displayGram} $GRAM
-                    </span>
+                    <span className="text-[12px] font-black text-sky-600 tracking-tight">PTS</span>
                   </div>
                 </div>
 
                 <div className="shrink-0 text-right">
-                  <span className="text-[10px] text-slate-400 font-semibold tracking-tight whitespace-nowrap block">
-                    10,000 PTS = 1 $GRAM
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 text-[10.5px] font-black border border-sky-200/80 shadow-2xs">
+                    ≈ {displayGram} $GRAM
                   </span>
                 </div>
               </div>
+
+              <div className="mt-2 pt-1.5 border-t border-slate-100/90 flex items-center justify-between text-[10px] font-bold">
+                <span className="text-slate-400 tracking-tight">Exchange Rate</span>
+                <span className="text-sky-600/90 font-extrabold tracking-tight">10,000 PTS = 1 $GRAM</span>
+              </div>
+
             </div>
           </div>
         );
@@ -911,7 +911,7 @@
         const [title, setTitle] = useState('');
         const [category, setCategory] = useState('Social');
         const [iconType, setIconType] = useState('telegram');
-        const [actionText, setActionText] = useState('Join Channel');
+        const [actionText, setActionText] = useState('Start');
         const [actionUrl, setActionUrl] = useState('');
         const [currency, setCurrency] = useState('STARS');
         const [impressions, setImpressions] = useState(100);
@@ -976,11 +976,12 @@
                   description: `Complete this ${category.toLowerCase()} mission to earn ⭐ stars!`,
                   category,
                   reward: 200,
-                  actionText: actionText.trim() || 'Start Mission',
+                  actionText: 'Start',
                   actionUrl: actionUrl.trim() || 'https://t.me/ToBOOST_Ai',
                   iconType,
                   paidWith: 'GRAM',
-                  cost: cost
+                  cost: cost,
+                  impressions: impressions
                 });
                 onClose();
               }
@@ -1008,11 +1009,12 @@
                 description: `Complete this ${category.toLowerCase()} mission to earn ⭐ stars!`,
                 category,
                 reward: 200,
-                actionText: actionText.trim() || 'Start Mission',
+                actionText: 'Start',
                 actionUrl: actionUrl.trim() || 'https://t.me/ToBOOST_Ai',
                 iconType,
                 paidWith: 'PTS',
-                cost: cost
+                cost: cost,
+                impressions: impressions
               });
               onClose();
             } catch (err) {
@@ -1053,11 +1055,12 @@
                       description: `Complete this ${category.toLowerCase()} mission to earn ⭐ stars!`,
                       category,
                       reward: 200,
-                      actionText: actionText.trim() || 'Start Mission',
+                      actionText: 'Start',
                       actionUrl: actionUrl.trim() || 'https://t.me/ToBOOST_Ai',
                       iconType,
                       paidWith: 'STARS',
-                      cost: cost
+                      cost: cost,
+                      impressions: impressions
                     });
                     onClose();
                   } else if (status === 'cancelled') {
@@ -1323,171 +1326,292 @@
 
       const HelpModal = ({ isOpen, onClose }) => {
         if (!isOpen) return null;
+
+        const [openIndex, setOpenIndex] = useState(null);
+
+        const toggleAccordion = (index) => {
+          setOpenIndex((prev) => (prev === index ? null : index));
+        };
+
         const faqs = [
-          { q: 'What is ToBOOSTAi?', a: 'ToBOOSTAi is a Web3 Mini App where users complete social bounties, watch sponsor ads, and convert earned Star PTS to $GRAM tokens.' },
-          { q: 'How to increase Daily Task limits?', a: 'You start with 5 daily tasks. By inviting 5, 10, 15+ friends, you unlock 10, 15, up to 20 high-reward tasks every day.' },
-          { q: 'What are Withdrawal Rules?', a: 'Withdrawals require meeting the minimum PTS threshold for your tier (10,000 PTS for 1st, 20,000 for 2nd, etc.), 7 consecutive daily check-ins, watching at least 10 sponsor ads today, and a connected TON Wallet.' },
+          {
+            q: '1.What is ToBOOSTAi?',
+            a: 'ToBOOSTAi is an app where users can publish and complete tasks. You can earn points by completing tasks or spend money to publish tasks for exposure'
+          },
+          {
+            q: '2.How can I earn points?',
+            a: 'Complete tasks and watch 10 daily ads to earn points, plus invite friends and earn exciting bonuses when they complete tasks!'
+          },
+          {
+            q: '3.How can I use points?',
+            a: 'Points can be exchanged for GRAM or used to publish tasks. 100 points = 0.01GRAM (Minimum: 10,000 points). You can also spend 10,000 points to get 100 task impressions.'
+          },
+          {
+            q: '4.How do I publish a task?',
+            a: "Click 'Post Task'.Enter the task name, task link, and your desired exposure level, make sure your link is correct.Once the fee is paid, your task will be published successfully!"
+          },
+          {
+            q: '5.Can I boost an existing task?',
+            a: 'Yes! You can purchase additional exposure for any task you have already published.'
+          }
         ];
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-            <div className="relative w-full max-w-sm rounded-[24px] bg-white border border-sky-100 shadow-2xl p-5 overflow-hidden max-h-[85vh] flex flex-col">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="relative w-full max-w-[340px] sm:max-w-sm rounded-[28px] bg-white border border-slate-100 shadow-2xl p-5 overflow-hidden max-h-[85vh] flex flex-col">
+              
+              {/* Header (No Coin Icon, Clean (?) FAQ and Close Button like Screenshot) */}
+              <div className="flex items-center justify-between pb-3.5 mb-2 border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <Coin3DIcon size={30} idPrefix="help-coin" />
-                  <div>
-                    <h3 className="font-display font-black text-slate-900 text-base">ToBOOSTAi Guide</h3>
-                    <p className="text-[12px] text-slate-400">Rules & FAQ</p>
+                  <div className="w-7 h-7 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center">
+                    <Icons.HelpCircle className="w-4 h-4 stroke-[2.2]" />
                   </div>
+                  <h3 className="font-display font-black text-slate-800 text-lg tracking-tight">FAQ</h3>
                 </div>
-                <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-slate-600">
-                  <Icons.X className="w-5 h-5" />
+                <button 
+                  onClick={onClose} 
+                  className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition active:scale-90"
+                >
+                  <Icons.X className="w-5 h-5 stroke-[2.2]" />
                 </button>
               </div>
 
-              <div className="py-3 space-y-3 overflow-y-auto no-scrollbar flex-1">
-                {faqs.map((faq, idx) => (
-                  <div key={idx} className="p-3 rounded-2xl bg-sky-50/50 border border-sky-100">
-                    <div className="font-display font-bold text-xs text-slate-800 mb-1">{faq.q}</div>
-                    <p className="text-[12px] text-slate-600 leading-relaxed">{faq.a}</p>
-                  </div>
-                ))}
+              {/* Accordion Folders List */}
+              <div className="py-1 space-y-2.5 overflow-y-auto no-scrollbar flex-1">
+                {faqs.map((faq, idx) => {
+                  const isOpen = openIndex === idx;
+
+                  return (
+                    <div 
+                      key={idx}
+                      className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                        isOpen 
+                          ? 'bg-sky-50/60 border-sky-200 shadow-xs' 
+                          : 'bg-slate-50/90 hover:bg-slate-100/80 border-slate-200/70'
+                      }`}
+                    >
+                      {/* Question Folder Header */}
+                      <div
+                        onClick={() => toggleAccordion(idx)}
+                        className="px-4 py-3.5 flex items-center justify-between cursor-pointer select-none"
+                      >
+                        <span className={`text-[13px] font-bold leading-snug transition-colors pr-2 ${
+                          isOpen ? 'text-sky-700' : 'text-slate-800'
+                        }`}>
+                          {faq.q}
+                        </span>
+                        <div className={`text-slate-400 transform transition-transform duration-200 shrink-0 ${
+                          isOpen ? 'rotate-90 text-sky-600' : ''
+                        }`}>
+                          <Icons.ChevronRight className="w-4 h-4 stroke-[2.5]" />
+                        </div>
+                      </div>
+
+                      {/* Expandable Answer Box */}
+                      {isOpen && (
+                        <div className="px-4 pb-3.5 pt-1 text-[12px] font-medium text-slate-600 leading-relaxed border-t border-sky-100/80">
+                          {faq.a}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
-              <button onClick={onClose} className="mt-2 w-full py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl cursor-pointer">
-                Close Guide
-              </button>
             </div>
           </div>
         );
       };
-
-      const SettingsModal = ({ isOpen, onClose, username, onUpdateUsername }) => {
-        const [editingName, setEditingName] = useState(username);
-        const [soundEnabled, setSoundEnabled] = useState(true);
-        const [hapticsEnabled, setHapticsEnabled] = useState(true);
-
+const SettingsModal = ({ isOpen, onClose, username }) => {
         if (!isOpen) return null;
 
-        const handleSave = (e) => {
-          e.preventDefault();
-          if (editingName.trim()) {
-            onUpdateUsername(editingName.trim());
-            onClose();
-          }
+        const [showPrivacy, setShowPrivacy] = useState(false);
+        const [copiedId, setCopiedId] = useState(false);
+
+        const userId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : '5569162716';
+        const avatarUrl = tg?.initDataUnsafe?.user?.photo_url || null;
+
+        const handleCopyId = () => {
+          navigator.clipboard.writeText(userId);
+          setCopiedId(true);
+          setTimeout(() => setCopiedId(false), 2000);
         };
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in">
-            <div className="relative w-full max-w-sm rounded-[24px] bg-white border border-sky-100 shadow-2xl p-5 overflow-hidden">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h3 className="font-display font-black text-slate-900 text-base">Settings</h3>
-                <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-slate-600">
-                  <Icons.X className="w-5 h-5" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="relative w-full max-w-[340px] sm:max-w-sm rounded-[28px] bg-white border border-slate-100 shadow-2xl p-5 overflow-hidden max-h-[85vh] flex flex-col">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between pb-3.5 mb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  {showPrivacy ? (
+                    <button
+                      onClick={() => setShowPrivacy(false)}
+                      className="p-1 -ml-1 rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition flex items-center gap-1 text-xs font-bold cursor-pointer"
+                    >
+                      <span>← Back</span>
+                    </button>
+                  ) : (
+                    <>
+                      <Icons.Settings className="w-5 h-5 text-slate-700" />
+                      <h3 className="font-display font-black text-slate-800 text-lg tracking-tight">Settings</h3>
+                    </>
+                  )}
+                  {showPrivacy && (
+                    <h3 className="font-display font-black text-slate-800 text-base tracking-tight ml-1">Privacy Policy</h3>
+                  )}
+                </div>
+                <button 
+                  onClick={onClose} 
+                  className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition active:scale-90 cursor-pointer"
+                >
+                  <Icons.X className="w-5 h-5 stroke-[2.2]" />
                 </button>
               </div>
 
-              <div className="py-3 space-y-3.5 max-h-[75vh] overflow-y-auto no-scrollbar">
-                <form onSubmit={handleSave} className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                    <Icons.User className="w-4 h-4 text-sky-600" />
-                    <span>Display Name</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={editingName}
-                      onChange={(e) => setEditingName(e.target.value)}
-                      maxLength={25}
-                      className="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-200 text-slate-900 font-semibold"
-                    />
-                    <button type="submit" className="px-3.5 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl text-xs font-bold cursor-pointer shadow-xs active:scale-95">
-                      Save
-                    </button>
+              {/* Main Content Area */}
+              <div className="overflow-y-auto no-scrollbar flex-1">
+                {showPrivacy ? (
+                  /* ======================================================== */
+                  /* FULL PRIVACY POLICY TEXT VIEW */
+                  /* ======================================================== */
+                  <div className="text-[12px] text-slate-600 space-y-3 leading-relaxed pr-1 pb-2">
+                    <div className="p-2.5 rounded-xl bg-sky-50/70 border border-sky-100 text-[11px] text-sky-800 font-semibold">
+                      Effective Date: September 5, 2025
+                    </div>
+                    <p className="font-medium">
+                      Welcome to our services. We highly value your privacy and are committed to protecting your personal data. This privacy policy details the information we collect, how we use it, and your related rights.
+                    </p>
+
+                    <div>
+                      <h5 className="font-bold text-slate-800 text-[12.5px] mb-1">1. Information We Collect</h5>
+                      <p><strong>1.1 Personal Data:</strong> Your Telegram user ID, username, and user avatar.</p>
+                      <p className="mt-1"><strong>1.2 Usage Data:</strong> Game data (activities, achievements, scores, rankings), device info, and log data.</p>
+                      <p className="mt-1"><strong>1.3 Transaction Data:</strong> Payment information and transaction history.</p>
+                    </div>
+
+                    <div>
+                      <h5 className="font-bold text-slate-800 text-[12.5px] mb-1">2. Cookies and Technologies</h5>
+                      <p>We use local storage and caching technologies to optimize your experience. Disabling these may prevent certain features.</p>
+                    </div>
+
+                    <div>
+                      <h5 className="font-bold text-slate-800 text-[12.5px] mb-1">3. How We Use Your Information</h5>
+                      <p>To provide and maintain services, process token conversions, prevent fraud, personalize user experience, and comply with legal requirements.</p>
+                    </div>
+
+                    <div>
+                      <h5 className="font-bold text-slate-800 text-[12.5px] mb-1">4. Data Sharing & Security</h5>
+                      <p>We do not sell personal data. We apply high-grade encryption, firewalls, and strict access controls to safeguard your information.</p>
+                    </div>
+
+                    <div>
+                      <h5 className="font-bold text-slate-800 text-[12.5px] mb-1">5. Your Rights & Retention</h5>
+                      <p>You have the right to access, rectify, or request deletion of your data according to applicable data protection laws.</p>
+                    </div>
+
+                    <div>
+                      <h5 className="font-bold text-slate-800 text-[12.5px] mb-1">6. Accessibility & Contact</h5>
+                      <p>Accessible via /privacy in bot or Settings in mini app. For support, contact @Toboosthelp.</p>
+                    </div>
                   </div>
-                </form>
-
-                <div className="pt-2 border-t border-slate-100 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-                    Community & Support
-                  </span>
-                  
-                  <button
-                    onClick={() => openSafeLink('https://t.me/ToBOOST_Ai')}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-sky-50/70 hover:bg-sky-100/70 border border-sky-100 text-slate-800 text-xs font-bold transition active:scale-[0.98] cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-[#2AABEE] text-white flex items-center justify-center shadow-xs">
-                        <Icons.Send className="w-3.5 h-3.5 -translate-x-[0.5px] translate-y-[0.5px]" />
+                ) : (
+                  /* ======================================================== */
+                  /* SETTINGS MAIN DASHBOARD (EXACT SCREENSHOT LAYOUT) */
+                  /* ======================================================== */
+                  <div className="space-y-3.5 pb-1">
+                    {/* Profile Header Box with 1-Click Copy ID */}
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-xs bg-gradient-to-tr from-sky-400 to-blue-500 shrink-0 flex items-center justify-center text-white font-bold text-base">
+                        {avatarUrl ? (
+                          <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                        ) : (
+                          <span>{(username || 'U')[0].toUpperCase()}</span>
+                        )}
                       </div>
-                      <span className="font-display text-slate-800">Community</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-[12px] text-sky-600 font-semibold">
-                      <span>Join</span>
-                      <Icons.ChevronRight className="w-3.5 h-3.5" />
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => openSafeLink('https://x.com/toboostapp')}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold transition active:scale-[0.98] cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-black text-white flex items-center justify-center shadow-xs">
-                        <Icons.Twitter className="w-3.5 h-3.5" />
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-display font-extrabold text-slate-900 text-sm leading-tight truncate">
+                          {username || 'User'}
+                        </h4>
+                        <div 
+                          onClick={handleCopyId}
+                          className="flex items-center gap-1.5 text-[11px] text-slate-500 font-mono mt-1 cursor-pointer hover:text-sky-600 transition w-fit select-none"
+                          title="Click to copy ID"
+                        >
+                          <span>ID:{userId}</span>
+                          {copiedId ? (
+                            <span className="text-emerald-600 text-[10px] font-bold">✓ Copied</span>
+                          ) : (
+                            <Icons.Copy className="w-3.5 h-3.5 text-slate-400 hover:text-slate-600" />
+                          )}
+                        </div>
                       </div>
-                      <span className="font-display text-slate-800">X Twitter</span>
                     </div>
-                    <div className="flex items-center gap-1 text-[12px] text-slate-500 font-semibold">
-                      <span>Follow</span>
-                      <Icons.ChevronRight className="w-3.5 h-3.5" />
-                    </div>
-                  </button>
 
-                  <button
-                    onClick={() => openSafeLink('https://t.me/Toboostapp')}
-                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-emerald-50/70 hover:bg-emerald-100/60 border border-emerald-100 text-slate-800 text-xs font-bold transition active:scale-[0.98] cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-xs">
-                        <Icons.HelpCircle className="w-3.5 h-3.5" />
+                    {/* Action Items List (Cards like Screenshot) */}
+                    <div className="rounded-2xl border border-slate-200/80 bg-white divide-y divide-slate-100 overflow-hidden shadow-xs">
+                      
+                      {/* Row 1: Channel */}
+                      <div
+                        onClick={() => openSafeLink('https://t.me/ToBOOST_Ai')}
+                        className="p-3.5 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition cursor-pointer select-none"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Icons.Telegram className="w-6 h-6 shrink-0" />
+                          <span className="font-bold text-[13.5px] text-slate-800">Channel</span>
+                        </div>
+                        <Icons.ChevronRight className="w-4 h-4 text-slate-300" />
                       </div>
-                      <span className="font-display text-slate-800">Support</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-[12px] text-emerald-600 font-semibold">
-                      <span>Chat</span>
-                      <Icons.ChevronRight className="w-3.5 h-3.5" />
-                    </div>
-                  </button>
-                </div>
 
-                <div className="space-y-2 pt-2 border-t border-slate-100">
-                  <div className="flex items-center justify-between py-1">
-                    <div className="flex items-center gap-2">
-                      <Icons.Volume2 className="w-4 h-4 text-slate-500" />
-                      <span className="text-xs font-semibold text-slate-700">Sound Effects</span>
+                      {/* Row 2: Go to X */}
+                      <div
+                        onClick={() => openSafeLink('https://x.com/toboostapp')}
+                        className="p-3.5 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition cursor-pointer select-none"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Icons.Twitter className="w-6 h-6 shrink-0" />
+                          <span className="font-bold text-[13.5px] text-slate-800">Go to X</span>
+                        </div>
+                        <Icons.ChevronRight className="w-4 h-4 text-slate-300" />
+                      </div>
+
+                      {/* Row 3: Support */}
+                      <div
+                        onClick={() => openSafeLink('https://t.me/Toboosthelp')}
+                        className="p-3.5 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition cursor-pointer select-none"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-6 h-6 rounded-lg bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                            <Icons.HelpCircle className="w-4 h-4 stroke-[2.2]" />
+                          </div>
+                          <span className="font-bold text-[13.5px] text-slate-800">Support</span>
+                        </div>
+                        <Icons.ChevronRight className="w-4 h-4 text-slate-300" />
+                      </div>
+
+                      {/* Row 4: Privacy policy */}
+                      <div
+                        onClick={() => setShowPrivacy(true)}
+                        className="p-3.5 flex items-center justify-between hover:bg-slate-50 active:bg-slate-100 transition cursor-pointer select-none"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-6 h-6 rounded-full bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                            <Icons.ShieldCheck className="w-4 h-4 stroke-[2.2]" />
+                          </div>
+                          <span className="font-bold text-[13.5px] text-slate-800">Privacy policy</span>
+                        </div>
+                        <Icons.ChevronRight className="w-4 h-4 text-slate-300" />
+                      </div>
+
                     </div>
-                    <button onClick={() => setSoundEnabled(!soundEnabled)} className={`w-10 h-6 flex items-center rounded-full p-1 cursor-pointer ${soundEnabled ? 'bg-sky-500 justify-end' : 'bg-slate-200 justify-start'}`}>
-                      <div className="w-4 h-4 rounded-full bg-white shadow-xs" />
-                    </button>
                   </div>
-
-                  <div className="flex items-center justify-between py-1">
-                    <div className="flex items-center gap-2">
-                      <Icons.Smartphone className="w-4 h-4 text-slate-500" />
-                      <span className="text-xs font-semibold text-slate-700">Haptic Feedback</span>
-                    </div>
-                    <button onClick={() => setHapticsEnabled(!hapticsEnabled)} className={`w-10 h-6 flex items-center rounded-full p-1 cursor-pointer ${hapticsEnabled ? 'bg-sky-500 justify-end' : 'bg-slate-200 justify-start'}`}>
-                      <div className="w-4 h-4 rounded-full bg-white shadow-xs" />
-                    </button>
-                  </div>
-                </div>
+                )}
               </div>
+
             </div>
           </div>
         );
       };
-
       const TaskLimitModal = ({ isOpen, onClose, dailyLimit, invites, onGoToFrens }) => {
         if (!isOpen) return null;
         return (
@@ -1549,11 +1673,11 @@
                 </div>
                 <div className={`flex items-center gap-2 ${conditions.hasStreak ? 'text-emerald-600 font-bold' : 'text-red-600 font-medium'}`}>
                   {conditions.hasStreak ? <Icons.Check className="w-4 h-4 shrink-0" /> : <Icons.X className="w-4 h-4 shrink-0" />}
-                  <span>7 Consecutive Daily Check-ins (Current: {conditions.currentStreak}/7 days)</span>
+                  <span>7 Consecutive Daily Check-ins (Completed: {conditions.savedStreaks > 0 || conditions.currentStreak >= 7 ? 'Yes' : 'No'})</span>
                 </div>
                 <div className={`flex items-center gap-2 ${conditions.hasAds ? 'text-emerald-600 font-bold' : 'text-red-600 font-medium'}`}>
                   {conditions.hasAds ? <Icons.Check className="w-4 h-4 shrink-0" /> : <Icons.X className="w-4 h-4 shrink-0" />}
-                  <span>Watch at least 10 sponsor ads today (Current: {conditions.currentAds}/10)</span>
+                  <span>Watch 10 sponsor ads daily for 7 days (Current: {conditions.savedAdDays || 0}/7 days)</span>
                 </div>
               </div>
               <button onClick={onClose} className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold cursor-pointer">
@@ -1616,7 +1740,7 @@
                             <Icons.Check className="w-4 h-4 stroke-[3]" />
                           </div>
                         ) : (
-                          <Coin3DIcon size={26} idPrefix={`check-day-${d.day}`} floating={isToday} />
+                          <Coin3DIcon size={26} idPrefix={`check-day-${d.day}`} floating={isToday} glow={isToday} />
                         )}
                       </div>
                       <div className="text-[11px] font-black text-slate-800">+{d.reward} PTS</div>
@@ -1644,11 +1768,14 @@
         );
       };
 
-      const FrensView = ({ currentInvites, dict }) => {
+      const FrensView = ({ currentInvites, teamMembers = [], dict }) => {
         const [copied, setCopied] = useState(false);
+        const [openLv2Id, setOpenLv2Id] = useState(null);
+
         const botUsername = 'ToFarmsAi_Bot';
-        const userId = tg?.initDataUnsafe?.user?.id || '';
-        const inviteUrl = `https://t.me/${botUsername}?startapp=ref_${userId}`;
+        const appShortName = 'play';
+        const userId = tg?.initDataUnsafe?.user?.id ? String(tg.initDataUnsafe.user.id) : '';
+        const inviteUrl = `https://t.me/${botUsername}/${appShortName}?startapp=ref_${userId}`;
 
         const handleCopy = () => {
           navigator.clipboard.writeText(inviteUrl);
@@ -1657,49 +1784,231 @@
         };
 
         const handleShare = () => {
-          const text = encodeURIComponent(`🚀 Join ToBOOSTAi on Telegram! Earn Star PTS and rewards together.\n\nPlay now: ${inviteUrl}`);
-          openSafeLink(`https://t.me/share/url?url=${inviteUrl}&text=${text}`);
+          const shareCaption = `TO BOOSTAi NOW!🌟 Start your online tasks and earn $GRAM rewards together.`;
+          const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(shareCaption)}`;
+          openSafeLink(shareUrl);
+        };
+
+        const toggleLv2 = (id) => {
+          setOpenLv2Id(prev => prev === id ? null : id);
         };
 
         return (
-          <div className="w-full px-4 pt-2 pb-20 space-y-3 tab-enter">
-            <div className="rounded-[20px] bg-gradient-to-br from-indigo-500 via-purple-600 to-sky-600 p-4 text-white shadow-md relative overflow-hidden">
-              <div className="relative z-10">
-                <div className="flex items-center gap-1 text-[11px] font-bold bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full w-fit mb-1.5">
-                  <Icons.Gift className="w-3 h-3" />
-                  <span>Referral Rewards</span>
+          <div className="h-full w-full flex flex-col overflow-hidden select-none">
+            
+            {/* 🔒 ১. উপরে লক থাকা ফিক্সড ব্যানার ও হেডার */}
+            <div className="shrink-0 w-full px-3.5 pt-1.5 pb-2 space-y-2 bg-[#dcf0fb] z-10 shadow-[0_2px_8px_rgba(56,189,248,0.06)]">
+              <div className="rounded-[20px] bg-gradient-to-br from-sky-400 via-sky-500 to-blue-600 p-3.5 text-white shadow-[0_4px_16px_rgba(2,132,199,0.22)] relative overflow-hidden">
+                <div className="relative z-10">
+                  <div className="flex items-center gap-1 text-[10.5px] font-bold bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full w-fit mb-1">
+                    <Icons.Gift className="w-3 h-3 text-sky-100" />
+                    <span>Referral Rewards</span>
+                  </div>
+
+                  <h3 className="font-display font-black text-[17px] tracking-tight leading-tight">
+                    Invite Frens, Earn Together
+                  </h3>
+                  <p className="text-[11px] text-sky-100/90 mt-0.5 leading-snug">
+                    Earn +100 PTS per fren and unlock higher daily tasks (5, 10, 15 up to 20 daily tasks)!
+                  </p>
+
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <button 
+                      onClick={handleShare} 
+                      className="flex-1 py-2 bg-white hover:bg-sky-50 active:scale-95 text-sky-900 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
+                    >
+                      <Icons.Share2 className="w-3 h-3 text-sky-600" />
+                      <span>Invite via Telegram</span>
+                    </button>
+                    <button 
+                      onClick={handleCopy} 
+                      className="px-3 py-2 bg-white/20 hover:bg-white/30 active:scale-95 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition-all cursor-pointer"
+                      title="Copy Link"
+                    >
+                      {copied ? <Icons.Check className="w-3.5 h-3.5 text-emerald-300" /> : <Icons.Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
                 </div>
-                <h2 className="font-display font-black text-xl tracking-tight leading-tight">{dict.inviteFrens}</h2>
-                <p className="text-[12px] text-indigo-100 mt-1 max-w-xs">
-                  Earn +100 PTS per fren and unlock higher daily tasks (5, 10, 15 up to 20 daily tasks)!
+              </div>
+
+              {/* Header: Team members [Count] */}
+              <div className="flex items-center justify-between px-1 pt-0.5">
+                <h2 className="font-display font-extrabold text-slate-800 text-base flex items-center gap-1.5">
+                  <span>Team members</span>
+                  <span className="text-slate-400 font-mono font-bold text-sm">「{teamMembers.length || currentInvites || 0}」</span>
+                </h2>
+
+                {/* 🌟 ২য় স্ক্রিনশটের মতো ভাইব্রেন্ট ব্লু সার্কেল প্রশ্নবোধক বাটন */}
+                <button 
+                  onClick={() => openSafeLink('https://t.me/ToBOOST_Ai')}
+                  className="w-6 h-6 rounded-full bg-[#24A1DE] hover:bg-[#0284C7] active:scale-90 border-2 border-sky-200/90 shadow-[0_2px_8px_rgba(36,161,222,0.35)] flex items-center justify-center transition-all cursor-pointer shrink-0"
+                  title="Team Rules & Guide"
+                >
+                  <svg className="w-3 h-3 text-white stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" strokeWidth="2.2" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" strokeWidth="2.2" strokeLinecap="round" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" strokeWidth="2.5" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* 🚀 ২. ১২০Hz স্ক্রোলিং মেম্বার লিস্টের শুরু */}
+            <div 
+              className="flex-1 min-h-0 w-full overflow-y-auto no-scrollbar px-3.5 py-1.5 space-y-2.5 touch-pan-y"
+              style={{ 
+                WebkitOverflowScrolling: 'touch', 
+                transform: 'translateZ(0)', 
+                willChange: 'scroll-position' 
+              }}
+            >
+{/* 👥 মেম্বার কার্ডস (ক্যাপসুলে চাপ দিলে Lv2 ফোল্ডার খুলবে) */}
+            {teamMembers && teamMembers.length > 0 ? (
+              teamMembers.map((m) => {
+                const isLv2Open = openLv2Id === m.userId;
+
+                return (
+                  <div 
+                    key={m.userId}
+                    className="rounded-[20px] bg-white border border-sky-100/90 shadow-[0_2px_8px_rgba(56,189,248,0.04)] p-3 space-y-2.5 transition-all"
+                    style={{ transform: 'translateZ(0)' }}
+                  >
+                    {/* Top Row: Avatar + Name + Points Capsule + Chat Icon */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-10 h-10 rounded-full overflow-hidden border border-sky-200 bg-gradient-to-tr from-sky-400 to-blue-500 shrink-0 flex items-center justify-center text-white font-bold text-sm shadow-2xs">
+                          {m.avatarUrl ? (
+                            <img src={m.avatarUrl} alt={m.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span>{(m.name || 'F')[0].toUpperCase()}</span>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <h4 className="font-display font-bold text-slate-900 text-[13.5px] leading-tight truncate">
+                            {m.name || 'Telegram Fren'}
+                          </h4>
+                        </div>
+                      </div>
+
+                      {/* Right: Capsule (Click to open Lv2!) + Chat Bubble */}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {/* 🌟 পয়েন্টের ক্যাপসুল (এটিতে চাপ দিলেই লেভেল-২ ফোল্ডার খুলবে!) */}
+                        <div 
+                          onClick={() => toggleLv2(m.userId)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 hover:bg-sky-100/80 active:scale-95 border border-sky-200/90 cursor-pointer shadow-2xs transition-all select-none"
+                          title="Click to view Lv2 members"
+                        >
+                          <Coin3DIcon size={15} idPrefix={`mem-pts-${m.userId}`} />
+                          <span className="text-[12px] font-extrabold text-sky-800 font-mono tabular-nums">
+                            {(m.points || 0).toLocaleString()}
+                          </span>
+                          <div className={`text-sky-500 transform transition-transform duration-200 ${isLv2Open ? 'rotate-90' : ''}`}>
+                            <Icons.ChevronRight className="w-3 h-3 stroke-[2.5]" />
+                          </div>
+                        </div>
+
+                        {/* 💬 ২য় স্ক্রিনশটের মতো কয়েন-কালার গ্লোসি মেসেজ বাটন */}
+                        <button
+                          onClick={() => {
+                            // ১. ইউজারনেম থাকলে সরাসরি https://t.me/ দিয়ে চ্যাট ওপেন
+                            if (m.username) {
+                              const cleanUser = String(m.username).replace(/^@/, '').trim();
+                              openSafeLink('https://t.me/' + cleanUser);
+                              return;
+                            }
+                            
+                            // ২. ইউজারনেম না থাকলে ও ফোনে সেভ না থাকলেও সরাসরি Telegram ID দিয়ে চ্যাট ওপেন
+                            if (m.userId) {
+                              try {
+                                window.location.href = 'tg://openmessage?user_id=' + m.userId;
+                                setTimeout(() => {
+                                  window.location.href = 'tg://user?id=' + m.userId;
+                                }, 300);
+                              } catch (err) {
+                                window.location.href = 'tg://user?id=' + m.userId;
+                              }
+                            }
+                          }}
+                          className="w-8 h-8 rounded-full bg-gradient-to-b from-white via-sky-50 to-sky-100/80 hover:from-white hover:to-sky-200 border border-sky-200 shadow-[0_2px_8px_rgba(56,189,248,0.22)] flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shrink-0"
+                          title={'Message ' + (m.name || 'Fren')}
+                        >
+                          <svg className="w-4 h-4 overflow-visible drop-shadow-[0_1px_3px_rgba(2,132,199,0.3)]" viewBox="0 0 24 24" fill="none">
+                            <defs>
+                              <linearGradient id={'chat-grad-' + m.userId} x1="10%" y1="10%" x2="90%" y2="90%">
+                                <stop offset="0%" stopColor="#38BDF8" />
+                                <stop offset="50%" stopColor="#0284C7" />
+                                <stop offset="100%" stopColor="#0369A1" />
+                              </linearGradient>
+                            </defs>
+                            {/* ২য় স্ক্রিনশটের মতো রাউন্ডেড চ্যাট বাবল */}
+                            <path
+                              d="M12 3C6.48 3 2 6.94 2 11.8c0 2.76 1.44 5.22 3.68 6.84-.25 1.58-.96 3.06-1.92 4.19-.22.26-.06.66.27.69 2.45.2 4.67-.62 6.36-1.77.53.07 1.07.1 1.61.1 5.52 0 10-3.94 10-8.8S17.52 3 12 3z"
+                              fill={'url(#chat-grad-' + m.userId + ')'}
+                            />
+                            {/* বাবলের ভেতরের ৩টি সাদা ডট */}
+                            <circle cx="8" cy="11.8" r="1.15" fill="#FFFFFF" />
+                            <circle cx="12" cy="11.8" r="1.15" fill="#FFFFFF" />
+                            <circle cx="16" cy="11.8" r="1.15" fill="#FFFFFF" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 🌟 লেভেল-২ ফোল্ডার (শুধুমাত্র ক্যাপসুলে চাপ দিলে খুলবে) */}
+                    {isLv2Open && (
+                      <div className="pt-2 border-t border-slate-100 animate-in fade-in duration-200 space-y-2">
+                        <div className="p-2.5 rounded-xl bg-slate-50/90 border border-slate-200/70 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[11px] font-bold text-slate-700">Lv2 members</span>
+                            <div className="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-full border border-slate-200 shadow-2xs">
+                              <Icons.Users className="w-3 h-3 text-slate-400" />
+                              <span className="font-mono">{m.lv2Count || 0}</span>
+                            </div>
+                          </div>
+
+                          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white border border-sky-100 shadow-2xs">
+                            <Coin3DIcon size={13} idPrefix={`lv2-coin-${m.userId}`} />
+                            <span className="text-[11px] font-extrabold text-sky-700 font-mono tabular-nums">
+                              {(m.lv2Points || 0).toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-slate-400 pl-1 leading-tight">
+                          Earn 100 PTS passive bonus whenever Lv2 members complete tasks!
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <div className="p-6 rounded-[22px] bg-white border border-sky-100 text-center shadow-xs">
+                <div className="w-12 h-12 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center mx-auto mb-2">
+                  <Icons.Users className="w-6 h-6" />
+                </div>
+                <h4 className="font-display font-bold text-slate-800 text-[14px]">No team members yet!</h4>
+                <p className="text-[11px] text-slate-400 mt-0.5 max-w-xs mx-auto">
+                  Invite friends using your link below to build your Lv1 & Lv2 earning network.
                 </p>
-
-                <div className="mt-3 flex items-center gap-2">
-                  <button onClick={handleShare} className="flex-1 py-2 bg-white text-indigo-900 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer">
-                    <Icons.Share2 className="w-3 h-3" />
-                    <span>Invite via Telegram</span>
-                  </button>
-                  <button onClick={handleCopy} className="px-3 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer">
-                    {copied ? <Icons.Check className="w-3.5 h-3.5 text-emerald-300" /> : <Icons.Copy className="w-3.5 h-3.5" />}
-                  </button>
-                </div>
               </div>
-            </div>
-
-            <div className="p-3.5 rounded-[16px] bg-white border border-sky-100 shadow-xs flex items-center justify-between gap-3">
-              <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Your Referral Network</span>
-                <p className="text-sm font-display font-bold text-slate-800 mt-0.5">{currentInvites} Active Frens</p>
-              </div>
-              <div className="px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold">
-                +100 PTS / fren
-              </div>
-            </div>
+            )}
           </div>
-        );
-      };
 
-      const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, withdrawCount = 0, onConnectWallet, onDisconnectWallet, onConvertStars, onShowAlert }) => {
+          {/* 🔒 ৩. নিচে লক থাকা ফিক্সড ইনভাইট বাটন */}
+          <div className="shrink-0 w-full px-4 pt-1.5 pb-20 bg-gradient-to-t from-[#dcf0fb] via-[#dcf0fb] to-transparent z-10">
+            <button
+              onClick={handleShare}
+              className="w-full py-3 bg-gradient-to-r from-sky-500 via-blue-600 to-sky-600 hover:from-sky-600 hover:to-blue-700 active:scale-[0.98] text-white font-extrabold text-[14px] rounded-2xl shadow-lg shadow-sky-500/25 flex items-center justify-center gap-2 cursor-pointer transition-all"
+            >
+              <span>Invite Members</span>
+              <Icons.User className="w-4 h-4 fill-white/20" />
+            </button>
+          </div>
+
+        </div>
+      );
+    };
+const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, savedStreaks, savedAdDays, withdrawCount = 0, onConnectWallet, onDisconnectWallet, onConvertStars, onShowAlert }) => {
         const tier = withdrawCount + 1;
         const minRequiredPts = tier * 10000;
         const minGramTokens = tier;
@@ -1730,8 +2039,8 @@
         const handleWithdrawClick = () => {
           const hasWallet = !!walletAddress;
           const hasMinBalance = starBalance >= minRequiredPts && parsedSwap >= minRequiredPts && parsedSwap <= starBalance;
-          const hasStreak = streakDays >= 7;
-          const hasAds = adsWatchedToday >= 10;
+          const hasStreak = (savedStreaks > 0) || (streakDays >= 7);
+          const hasAds = (savedAdDays >= 7);
 
           if (!hasWallet || !hasMinBalance || !hasStreak || !hasAds) {
             onShowAlert({
@@ -1745,6 +2054,8 @@
               currentBalance: starBalance,
               currentStreak: streakDays,
               currentAds: adsWatchedToday,
+              savedStreaks,
+              savedAdDays,
             });
             if (!hasWallet) {
               handleConnectClick();
@@ -1852,7 +2163,8 @@
                   <div className="text-[10px] leading-relaxed">
                     • TON Wallet Connected: {walletAddress ? '✅ Connected' : '❌ Connect from Wallet tab'}<br />
                     • Minimum: {minRequiredPts.toLocaleString()} PTS = {minGramTokens} $GRAM<br />
-                    • 7-Day Streak ({streakDays}/7) • 10 Daily Ads ({adsWatchedToday}/10)
+                    • Must complete 7-Day Check-in Streak.<br />
+                    • Must watch 10 Ads daily for 7 Days.
                   </div>
                 </div>
 
@@ -1928,6 +2240,8 @@
           adsWatchedToday: getStoredAdCount(currentUserId),
           withdrawCount: getStoredWithdrawCount(currentUserId),
           avatarUrl: tg?.initDataUnsafe?.user?.photo_url || null,
+          savedStreaks: 0,
+          savedAdDays: 0,
         });
 
         const [activeTab, setActiveTab] = useState('home');
@@ -1989,7 +2303,7 @@
                     fetch('/api/user', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json', 'x-telegram-init-data': initData },
-                      body: JSON.stringify({ walletAddress: friendlyAddr })
+                      body: JSON.stringify({ initData, walletAddress: friendlyAddr })
                     }).catch(() => {});
                   }
                 } else {
@@ -2028,7 +2342,11 @@
               'Content-Type': 'application/json',
               'x-telegram-init-data': initData
             },
-            body: JSON.stringify({ initData, startParam })
+            body: JSON.stringify({ 
+              initData, 
+              startParam, 
+              photoUrl: tg?.initDataUnsafe?.user?.photo_url || null 
+            })
           })
           .then(res => res.json().catch(() => ({})))
           .then(data => {
@@ -2063,7 +2381,10 @@
                 userLevel: u.level || 1,
                 currentInvites: Number(u.referralsCount ?? u.referrals ?? u.referralCount ?? 0),
                 adsWatchedToday: typeof u.adsWatchedToday === 'number' ? u.adsWatchedToday : prev.adsWatchedToday,
-                walletAddress: u.walletAddress || prev.walletAddress
+                walletAddress: u.walletAddress || prev.walletAddress,
+                savedStreaks: u.savedStreaks || 0,
+                savedAdDays: u.savedAdDays || 0,
+                teamMembers: Array.isArray(u.teamMembers) ? u.teamMembers : []
               }));
 
               setCompletedTasksList(mergedCompleted);
@@ -2271,7 +2592,9 @@
                 category: newBounty.category,
                 reward: newBounty.reward || 200,
                 iconType: newBounty.iconType,
-                impressions: newBounty.impressions || newBounty.cost || 100
+                impressions: newBounty.impressions || 100,
+                cost: newBounty.cost || 0,
+                paidWith: newBounty.paidWith || 'PTS'
               })
             });
 
@@ -2403,9 +2726,10 @@
               )}
 
               {activeTab === 'frens' && (
-                <div className="flex-1 min-h-0 w-full overflow-y-auto no-scrollbar touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+                <div className="flex-1 min-h-0 w-full overflow-hidden flex flex-col tab-enter">
                   <FrensView
                     currentInvites={stats.currentInvites}
+                    teamMembers={stats.teamMembers || []}
                     dict={dict}
                   />
                 </div>
@@ -2414,11 +2738,13 @@
               {activeTab === 'wallet' && (
                 <div className="flex-1 min-h-0 w-full overflow-y-auto no-scrollbar touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
                   <WalletView
-                    starBalance={stats.starBalance}
-                    walletAddress={stats.walletAddress}
-                    streakDays={stats.streakDays}
-                    adsWatchedToday={stats.adsWatchedToday}
-                    withdrawCount={stats.withdrawCount}
+                  starBalance={stats.starBalance}
+                  walletAddress={stats.walletAddress}
+                  streakDays={stats.streakDays}
+                  adsWatchedToday={stats.adsWatchedToday}
+                  savedStreaks={stats.savedStreaks}
+                  savedAdDays={stats.savedAdDays}
+                  withdrawCount={stats.withdrawCount}
                     onConnectWallet={(addr) => setStats((p) => ({ ...p, walletAddress: addr }))}
                     onDisconnectWallet={() => setStats((p) => ({ ...p, walletAddress: null }))}
                     onConvertStars={handleConvertStars}
