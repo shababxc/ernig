@@ -378,7 +378,7 @@
       };
 
       const Coin3DIcon = ({
-        size = 36,
+        size = 28,
         className = '',
         floating = true,
         glow = true,
@@ -573,54 +573,64 @@
         );
       };
 
-      const DynamicBalanceCard = ({ starBalance, tokenBalance, dict }) => {
-        const formattedStars = starBalance.toLocaleString();
-        const displayGram = tokenBalance.toFixed(3);
+      const DynamicBalanceCard = ({ starBalance = 0, tokenBalance = 0, dict = {} }) => {
+        const safeStars = Number(starBalance) || 0;
+        const safeGram = Number(tokenBalance) || 0;
+        const formattedStars = safeStars.toLocaleString();
+        const displayGram = safeGram.toFixed(3);
+
+        const totalBalanceLabel = (dict && dict.totalBalance) || 'TOTAL BALANCE';
+        const verifiedLabel = (dict && dict.verified) || 'Verified';
 
         return (
           <div className="w-full">
-            <div className="relative overflow-hidden rounded-[15px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] px-3.5 py-2">
+            {/* 🌟 স্লিম ও ছিমছাম ব্যালেন্স কার্ড (py-1.5) */}
+            <div className="relative overflow-hidden rounded-[15px] bg-white border border-sky-100 shadow-[0_2px_7px_rgba(56,189,248,0.05)] px-3.5 py-1.5">
               
-              <div className="flex items-center justify-between gap-2 mb-1.5">
-                <span className="text-[9.5px] font-extrabold uppercase tracking-widest text-slate-400">
-                  {dict.totalBalance}
+              {/* Header: Total Balance & Verified */}
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">
+                  {totalBalanceLabel}
                 </span>
                 
-                <div className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 shrink-0">
-                  <Icons.ShieldCheck className="w-3.5 h-3.5" />
-                  <span>{dict.verified}</span>
+                <div className="inline-flex items-center gap-1 text-[9.5px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/70 shrink-0">
+                  <Icons.ShieldCheck className="w-3 h-3" />
+                  <span>{verifiedLabel}</span>
                 </div>
               </div>
 
+              {/* Middle Row: 28px Coin + Balanced Amount (PX) + $GRAM */}
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <Coin3DIcon size={36} idPrefix="balance-main" floating={true} glow={true} />
+                <div className="flex items-center gap-2 min-w-0">
+                  {/* 🌟 পারফেক্ট ২৮px কয়েন সাইজ */}
+                  <Coin3DIcon size={28} idPrefix="balance-main" floating={false} glow={false} />
                   
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="font-display font-extrabold text-[24px] sm:text-[26px] text-slate-900 tracking-normal tabular-nums leading-none">
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-display font-extrabold text-[21px] sm:text-[23px] text-slate-900 tracking-normal tabular-nums leading-none">
                       {formattedStars}
                     </span>
-                    <span className="text-[12px] font-black text-sky-600 tracking-tight">PTS</span>
+                    {/* 🌟 PTS এর বদলে PX */}
+                    <span className="text-[11px] font-black text-sky-600 tracking-tight">PX</span>
                   </div>
                 </div>
 
                 <div className="shrink-0 text-right">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 text-[10.5px] font-black border border-sky-200/80 shadow-2xs">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 text-[10px] font-black border border-sky-200/80 shadow-2xs">
                     ≈ {displayGram} $GRAM
                   </span>
                 </div>
               </div>
 
-              <div className="mt-2 pt-1.5 border-t border-slate-100/90 flex items-center justify-between text-[10px] font-bold">
+              {/* Bottom Row: Exchange Rate with ≈ symbol */}
+              <div className="mt-1 pt-1 border-t border-slate-100/90 flex items-center justify-between text-[9.5px] font-bold">
                 <span className="text-slate-400 tracking-tight">Exchange Rate</span>
-                <span className="text-sky-600/90 font-extrabold tracking-tight">10,000 PTS = 1 $GRAM</span>
+                <span className="text-sky-600/90 font-extrabold tracking-tight">10,000 PX ≈ 1 $GRAM</span>
               </div>
 
             </div>
           </div>
         );
       };
-
       const BottomNavBar = ({ activeTab, onSelectTab, hasCheckedInToday }) => {
         const tabs = [
           { id: 'home', label: 'Home', icon: Icons.Home },
@@ -673,7 +683,6 @@
           </nav>
         );
       };
-
       const QuickActionsGrid = ({
         adReward,
         checkInReward,
@@ -697,17 +706,19 @@
         return (
           <div className="w-full">
             <div className="grid grid-cols-2 gap-2">
-              <div onClick={onWatchAdClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[15px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[76px]">
-                <div className="flex items-start justify-between">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-sky-400 to-blue-500 flex items-center justify-center text-white shadow-xs">
+              
+              {/* Watch Ad */}
+              <div onClick={onWatchAdClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[16px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[82px]">
+                <div className="flex items-center justify-between gap-1.5">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-400 to-blue-500 flex items-center justify-center text-white shadow-xs shrink-0">
                     <Icons.PlayCircle className="w-4 h-4 stroke-white" />
                   </div>
-                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-sky-50 border border-sky-200/80 text-sky-700 text-[11px] font-extrabold tabular-nums">
-                    <Coin3DIcon size={11} idPrefix="ad-reward" />
-                    <span>+{adReward}</span>
+                  <div className="inline-flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-gradient-to-r from-sky-50 to-blue-50/90 border border-sky-200/90 text-sky-800 text-[12px] font-black tracking-tight shadow-2xs tabular-nums shrink-0">
+                    <Coin3DIcon size={18} idPrefix="ad-reward" />
+                    <span>+{adReward} PX</span>
                   </div>
                 </div>
-                <div className="mt-1">
+                <div className="mt-1.5">
                   <div className="flex items-center justify-between">
                     <h3 className="font-display font-bold text-slate-800 text-[12px] group-hover:text-sky-600 transition-colors leading-tight">{dict.watchAd}</h3>
                     <Icons.ChevronRight className="w-3.5 h-3.5 text-slate-300" />
@@ -718,17 +729,18 @@
                 </div>
               </div>
 
-              <div onClick={onCheckInClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[15px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[76px]">
-                <div className="flex items-start justify-between">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-xs">
+              {/* Daily Check-in */}
+              <div onClick={onCheckInClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[16px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[82px]">
+                <div className="flex items-center justify-between gap-1.5">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-xs shrink-0">
                     <Icons.CalendarCheck className="w-4 h-4" />
                   </div>
-                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-sky-50 border border-sky-200/80 text-sky-700 text-[11px] font-extrabold tabular-nums">
-                    <Coin3DIcon size={11} idPrefix="checkin-reward" />
-                    <span>+{checkInReward}</span>
+                  <div className="inline-flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-gradient-to-r from-sky-50 to-blue-50/90 border border-sky-200/90 text-sky-800 text-[12px] font-black tracking-tight shadow-2xs tabular-nums shrink-0">
+                    <Coin3DIcon size={18} idPrefix="checkin-reward" />
+                    <span>+{checkInReward} PX</span>
                   </div>
                 </div>
-                <div className="mt-1">
+                <div className="mt-1.5">
                   <div className="flex items-center justify-between">
                     <h3 className="font-display font-bold text-slate-800 text-[12px] group-hover:text-sky-600 transition-colors leading-tight">{dict.dailyCheckIn}</h3>
                     <Icons.ChevronRight className="w-3.5 h-3.5 text-slate-300" />
@@ -741,9 +753,10 @@
                 </div>
               </div>
 
-              <div onClick={onInviteClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[15px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[76px]">
-                <div className="flex items-start justify-between">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-xs">
+              {/* Referral & Level */}
+              <div onClick={onInviteClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[16px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[82px]">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-xs shrink-0">
                     <Icons.Users className="w-4 h-4" />
                   </div>
                   <span className="text-[10.5px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200/70 tabular-nums">
@@ -753,7 +766,7 @@
                 <div className="mt-1">
                   <div className="flex items-center justify-between">
                     <h3 className="font-display font-bold text-slate-800 text-[12px] group-hover:text-indigo-600 transition-colors leading-tight">{dict.referralLevel}</h3>
-                    <span className="text-[10px] font-extrabold text-indigo-600">+100 PTS</span>
+                    <span className="text-[11px] font-black text-indigo-600">+100 PX</span>
                   </div>
                   <div className="mt-1 space-y-0.5">
                     <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
@@ -767,9 +780,10 @@
                 </div>
               </div>
 
-              <div onClick={onTasksClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[15px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[76px]">
-                <div className="flex items-start justify-between">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center text-white shadow-xs">
+              {/* Daily Tasks */}
+              <div onClick={onTasksClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[16px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[82px]">
+                <div className="flex items-center justify-between">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center text-white shadow-xs shrink-0">
                     <Icons.CheckCircle2 className="w-4 h-4" />
                   </div>
                   <span className="text-[10.5px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200/70 tabular-nums">
@@ -786,12 +800,13 @@
                       <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${taskPercentage}%` }} />
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium">
-                      <span>200 PTS/task</span>
+                      <span>200 PX/task</span>
                       <span className="font-bold text-teal-600">Max {dailyTaskLimit}</span>
                     </div>
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         );
@@ -809,14 +824,14 @@
 
         const renderIcon = (type) => {
           switch (type?.toLowerCase()) {
-            case 'telegram': return <Icons.Telegram className="w-7 h-7 shrink-0 drop-shadow-xs" />;
-            case 'twitter': return <Icons.Twitter className="w-7 h-7 shrink-0 drop-shadow-xs" />;
-            case 'youtube': return <Icons.Youtube className="w-7 h-7 shrink-0 drop-shadow-xs" />;
-            case 'facebook': return <Icons.Facebook className="w-7 h-7 shrink-0 drop-shadow-xs" />;
-            case 'instagram': return <Icons.Instagram className="w-7 h-7 shrink-0 drop-shadow-xs" />;
-            case 'bot': return <Icons.Bot className="w-7 h-7 shrink-0 drop-shadow-xs" />;
+            case 'telegram': return <Icons.Telegram className="w-6 h-6 shrink-0 drop-shadow-xs" />;
+            case 'twitter': return <Icons.Twitter className="w-6 h-6 shrink-0 drop-shadow-xs" />;
+            case 'youtube': return <Icons.Youtube className="w-6 h-6 shrink-0 drop-shadow-xs" />;
+            case 'facebook': return <Icons.Facebook className="w-6 h-6 shrink-0 drop-shadow-xs" />;
+            case 'instagram': return <Icons.Instagram className="w-6 h-6 shrink-0 drop-shadow-xs" />;
+            case 'bot': return <Icons.Bot className="w-6 h-6 shrink-0 drop-shadow-xs" />;
             case 'others':
-            default: return <Icons.Globe className="w-7 h-7 shrink-0 drop-shadow-xs" />;
+            default: return <Icons.Globe className="w-6 h-6 shrink-0 drop-shadow-xs" />;
           }
         };
 
@@ -825,7 +840,7 @@
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <div className="flex items-center gap-2">
                 <h2 className="font-display font-extrabold text-slate-900 text-[15px] tracking-tight">{dict.activeBounties}</h2>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">200 PTS each</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-700">200 PX each</span>
               </div>
               
               <button
@@ -853,6 +868,7 @@
               ))}
             </div>
 
+            {/* 🌟 space-y-1.5 দিয়ে ৪-৫টি টাস্ক একসাথে স্ক্রিনে ছিমছাম ফিট হবে */}
             <div className="space-y-1.5">
               {visibleTasks.length === 0 ? (
                 <div className="p-4 rounded-[16px] bg-white/90 border border-sky-100 text-center shadow-xs">
@@ -864,35 +880,39 @@
                 visibleTasks.map((task) => (
                   <div
                     key={task.id}
-                    className="py-2 px-3 rounded-[14px] bg-white border border-sky-100/90 shadow-[0_1px_6px_rgba(56,189,248,0.05)] flex items-center justify-between gap-2.5 transition-all hover:border-sky-300"
+                    className="py-1.5 px-2.5 rounded-[13px] bg-white border border-sky-100/90 shadow-[0_1px_4px_rgba(56,189,248,0.04)] flex items-center justify-between gap-2 transition-all hover:border-sky-300"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0">
                         {renderIcon(task.iconType)}
                       </div>
                       <div className="min-w-0">
-                        <div className="flex items-center gap-1 flex-wrap">
-                          <span className="text-[10px] font-bold text-sky-600 uppercase tracking-wider">{task.category}</span>
-                          {task.partnerName && <span className="text-[10px] text-slate-400 font-medium">· {task.partnerName}</span>}
-                        </div>
-                        <h4 className="font-display font-bold text-slate-800 text-[13px] leading-tight truncate">{task.title}</h4>
-                        <div className="inline-flex items-center gap-1 mt-0.5 text-[10.5px] font-extrabold text-sky-700 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200/60 tabular-nums">
-                          <Coin3DIcon size={11} idPrefix={`task-coin-${task.id}`} />
-                          <span>+{task.reward || 200} PTS</span>
+                        <h4 className="font-display font-bold text-slate-800 text-[12px] leading-tight truncate">{task.title}</h4>
+                        
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          <span className="text-[9px] font-extrabold text-sky-600 uppercase tracking-wide bg-sky-50 px-1.5 py-0.5 rounded border border-sky-200/60 leading-none">
+                            {task.category}
+                          </span>
+
+                          {/* 🌟 ২২px কয়েন + ডানে ফাঁকা ছাড়া PX এর একদম গা ঘেঁষে বর্ডার (pl-0.5 pr-1.5) */}
+                          <div className="inline-flex items-center gap-1 pl-0.5 pr-1.5 py-0.5 rounded-full bg-gradient-to-r from-sky-50 to-blue-50/90 border border-sky-200/90 text-sky-800 text-[11px] font-black tracking-tight shadow-2xs tabular-nums leading-none">
+                            <Coin3DIcon size={18} idPrefix={`task-coin-${task.id}`} />
+                            <span>+{task.reward || 200} PX</span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="shrink-0">
                       {task.status === 'verifying' ? (
-                        <button disabled className="flex items-center gap-1 px-3 py-1 bg-sky-100 text-sky-800 rounded-full text-[11.5px] font-bold transition-all whitespace-nowrap">
+                        <button disabled className="flex items-center gap-1 px-3 py-1 bg-sky-100 text-sky-800 rounded-full text-[11px] font-bold transition-all whitespace-nowrap">
                           <Icons.Loader2 className="w-3.5 h-3.5 animate-spin text-sky-600" />
                           <span>Checking (3s)</span>
                         </button>
                       ) : (
                         <button
                           onClick={() => onStartTask(task.id, task.actionUrl || task.url)}
-                          className="flex items-center gap-1 px-3.5 py-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 text-white rounded-full text-[11.5px] font-bold transition-all shadow-xs active:scale-95 whitespace-nowrap cursor-pointer"
+                          className="flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 text-white rounded-full text-[11px] font-bold transition-all shadow-xs active:scale-95 whitespace-nowrap cursor-pointer"
                         >
                           <span>{task.actionText || 'Start'}</span>
                           <Icons.ExternalLink className="w-3 h-3 opacity-80" />
@@ -907,61 +927,104 @@
         );
       };
 
+      /* 🌟 ২য় স্ক্রিনশটের মতো ১০০% হুবহু প্রিমিয়াম পোস্ট মোডাল */
       const PostBountyModal = ({ isOpen, onClose, starBalance, walletAddress, onDeductPts, onSubmitBounty, showToast }) => {
         const [title, setTitle] = useState('');
         const [category, setCategory] = useState('Social');
         const [iconType, setIconType] = useState('telegram');
-        const [actionText, setActionText] = useState('Start');
         const [actionUrl, setActionUrl] = useState('');
-        const [currency, setCurrency] = useState('STARS');
+        // 🌟 স্লাইডার ডিফল্ট ১০০ থাকবে
         const [impressions, setImpressions] = useState(100);
         const [isSubmitting, setIsSubmitting] = useState(false);
+        const [modalError, setModalError] = useState('');
 
         if (!isOpen) return null;
 
-        const calcCostValue = () => {
-          const ratio = (impressions - 100) / (10000 - 100);
-          if (currency === 'GRAM') {
-            return Number((1 + ratio * (20 - 1)).toFixed(2));
-          } else if (currency === 'STARS') {
-            return Math.round(300 + ratio * (6000 - 300));
+        // আপনার ডিসকাউন্ট ক্যালকুলেটর
+        const calcPricing = (imp) => {
+          let gramCurrent, gramOld, starsCurrent, starsOld, ptsCost;
+
+          const ratio = (imp - 100) / (10000 - 100);
+          const rawPts = 10000 + ratio * (200000 - 10000);
+          ptsCost = Math.round(rawPts / 500) * 500;
+
+          gramOld = imp >= 10000 ? 100 : (imp <= 100 ? 1 : Math.round(imp / 100));
+          starsOld = imp >= 10000 ? 30000 : (imp <= 100 ? 300 : Math.round(imp * 3));
+
+          if (imp <= 100) {
+            gramCurrent = 1.00;
+            starsCurrent = 300;
+          } else if (imp <= 200) {
+            gramCurrent = 1.75;
+            starsCurrent = 475;
+          } else if (imp <= 300) {
+            gramCurrent = 2.50;
+            starsCurrent = 585;
+          } else if (imp <= 400) {
+            gramCurrent = 3.25;
+            starsCurrent = 800;
+          } else if (imp <= 500) {
+            gramCurrent = 4.00;
+            starsCurrent = 975;
+          } else if (imp <= 600) {
+            gramCurrent = 4.55;
+            starsCurrent = 1370;
+          } else if (imp <= 700) {
+            gramCurrent = 5.25;
+            starsCurrent = 1425;
+          } else if (imp <= 800) {
+            gramCurrent = 5.75;
+            starsCurrent = 1560;
+          } else if (imp <= 900) {
+            gramCurrent = 6.25;
+            starsCurrent = 1755;
+          } else if (imp <= 1000) {
+            gramCurrent = 6.75;
+            starsCurrent = 1950;
           } else {
-            return Math.round(10000 + ratio * (200000 - 10000));
+            const t = (imp - 1000) / 9000;
+            gramCurrent = Number((6.75 + t * (20 - 6.75)).toFixed(2));
+            starsCurrent = Math.round(1950 + t * (6000 - 1950));
           }
+
+          return {
+            gramCurrent,
+            gramOld: Math.max(gramCurrent, gramOld),
+            starsCurrent,
+            starsOld: Math.max(starsCurrent, starsOld),
+            ptsCost
+          };
         };
 
-        const calcDisplayPrice = () => {
-          const val = calcCostValue();
-          if (currency === 'GRAM') return `${val} $GRAM`;
-          if (currency === 'STARS') return `${val} Stars`;
-          return `${val.toLocaleString()} PTS`;
-        };
+        const pricing = calcPricing(impressions);
 
-        const handleSubmit = async (e) => {
-          e.preventDefault();
-          if (!title.trim() || !actionUrl.trim()) return;
+        // স্লাইডারের কালার পার্সেন্টেজ হিসাব
+        const sliderPercent = Math.min(100, Math.max(0, ((impressions - 100) / (10000 - 100)) * 100));
 
-          const cost = calcCostValue();
+        const handleExecutePayment = async (currency) => {
+          if (!title.trim() || !actionUrl.trim()) {
+            setModalError('⚠️ Please enter task name and URL!');
+            setTimeout(() => setModalError(''), 2500);
+            return;
+          }
 
+          // ১. $GRAM
           if (currency === 'GRAM') {
             if (!walletAddress) {
-              showToast('⚠️ Please connect your TON wallet to pay $GRAM!');
-              if (window.tonConnectUIInstance) {
-                window.tonConnectUIInstance.openModal();
-              }
+              showToast('⚠️ Please connect TON wallet to pay $GRAM!');
+              if (window.tonConnectUIInstance) window.tonConnectUIInstance.openModal();
               return;
             }
 
             setIsSubmitting(true);
-            showToast('Fetching secure gateway info...');
+            showToast('Fetching gateway info...');
             try {
               const payInfoRes = await fetch('/api/tasks?action=payment_info');
               const payInfoData = await payInfoRes.json().catch(() => ({}));
               const backendReceiver = payInfoData.receiverAddress;
-
               if (!backendReceiver) throw new Error('Gateway unreachable');
 
-              const nanoAmount = Math.round(cost * 1e9).toString();
+              const nanoAmount = Math.round(pricing.gramCurrent * 1e9).toString();
               const transaction = {
                 validUntil: Math.floor(Date.now() / 1000) + 360,
                 messages: [{ address: backendReceiver, amount: nanoAmount }]
@@ -969,8 +1032,7 @@
 
               if (window.tonConnectUIInstance) {
                 await window.tonConnectUIInstance.sendTransaction(transaction);
-                showToast('✅ Payment received in $GRAM! Publishing mission...');
-                
+                showToast('✅ Payment received! Publishing mission...');
                 await onSubmitBounty({
                   title: title.trim(),
                   description: `Complete this ${category.toLowerCase()} mission to earn ⭐ stars!`,
@@ -980,7 +1042,7 @@
                   actionUrl: actionUrl.trim() || 'https://t.me/ToBOOST_Ai',
                   iconType,
                   paidWith: 'GRAM',
-                  cost: cost,
+                  cost: pricing.gramCurrent,
                   impressions: impressions
                 });
                 onClose();
@@ -993,15 +1055,67 @@
             return;
           }
 
-          else if (currency === 'PTS') {
-            if (starBalance < cost) {
-              showToast(`❌ Insufficient PTS! You need ${cost.toLocaleString()} PTS.`);
+          // ২. STARS
+          if (currency === 'STARS') {
+            setIsSubmitting(true);
+            showToast('Opening Stars Payment...');
+            try {
+              const invRes = await fetch('/api/create-stars-invoice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-telegram-init-data': tg?.initData || '' },
+                body: JSON.stringify({
+                  title: title.trim(),
+                  starsCost: pricing.starsCurrent,
+                  impressions: impressions,
+                  actionUrl: actionUrl.trim()
+                })
+              });
+              const invData = await invRes.json().catch(() => ({}));
+
+              if (invData && invData.invoiceLink && window.Telegram?.WebApp?.openInvoice) {
+                window.Telegram.WebApp.openInvoice(invData.invoiceLink, async (status) => {
+                  if (status === 'paid') {
+                    showToast('⭐️ Stars Payment Confirmed!');
+                    await onSubmitBounty({
+                      title: title.trim(),
+                      description: `Complete this ${category.toLowerCase()} mission to earn ⭐ stars!`,
+                      category,
+                      reward: 200,
+                      actionText: 'Start',
+                      actionUrl: actionUrl.trim() || 'https://t.me/ToBOOST_Ai',
+                      iconType,
+                      paidWith: 'STARS',
+                      cost: pricing.starsCurrent,
+                      impressions: impressions
+                    });
+                    onClose();
+                  } else {
+                    showToast('Payment cancelled or failed.');
+                  }
+                  setIsSubmitting(false);
+                });
+                return;
+              } else {
+                showToast(invData?.error || 'Stars gateway unavailable');
+                setIsSubmitting(false);
+              }
+            } catch (err) {
+              showToast('Stars gateway error.');
+              setIsSubmitting(false);
+            }
+            return;
+          }
+
+          // ৩. Points / PX
+          if (currency === 'PTS') {
+            if (starBalance < pricing.ptsCost) {
+              showToast(`❌ Insufficient balance! You need ${pricing.ptsCost.toLocaleString()} Pts.`);
               return;
             }
 
             setIsSubmitting(true);
-            onDeductPts(cost);
-            showToast(`✅ ${cost.toLocaleString()} PTS deducted for Boost!`);
+            onDeductPts(pricing.ptsCost);
+            showToast(`✅ ${pricing.ptsCost.toLocaleString()} Pts deducted!`);
 
             try {
               await onSubmitBounty({
@@ -1013,7 +1127,7 @@
                 actionUrl: actionUrl.trim() || 'https://t.me/ToBOOST_Ai',
                 iconType,
                 paidWith: 'PTS',
-                cost: cost,
+                cost: pricing.ptsCost,
                 impressions: impressions
               });
               onClose();
@@ -1024,137 +1138,126 @@
             }
             return;
           }
-
-          else if (currency === 'STARS') {
-            setIsSubmitting(true);
-            showToast('Opening Stars Payment Sheet...');
-
-            try {
-              const invRes = await fetch('/api/create-stars-invoice', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'x-telegram-init-data': tg?.initData || ''
-                },
-                body: JSON.stringify({
-                  title: title.trim(),
-                  starsCost: cost,
-                  impressions,
-                  actionUrl: actionUrl.trim()
-                })
-              });
-              
-              const invData = await invRes.json().catch(() => ({}));
-
-              if (invData && invData.invoiceLink && window.Telegram?.WebApp?.openInvoice) {
-                window.Telegram.WebApp.openInvoice(invData.invoiceLink, async (status) => {
-                  if (status === 'paid') {
-                    showToast('⭐️ Stars Payment Confirmed! Publishing...');
-                    await onSubmitBounty({
-                      title: title.trim(),
-                      description: `Complete this ${category.toLowerCase()} mission to earn ⭐ stars!`,
-                      category,
-                      reward: 200,
-                      actionText: 'Start',
-                      actionUrl: actionUrl.trim() || 'https://t.me/ToBOOST_Ai',
-                      iconType,
-                      paidWith: 'STARS',
-                      cost: cost,
-                      impressions: impressions
-                    });
-                    onClose();
-                  } else if (status === 'cancelled') {
-                    showToast('Payment was cancelled.');
-                  } else {
-                    showToast('Stars checkout pending or failed.');
-                  }
-                  setIsSubmitting(false);
-                });
-                return;
-              } else {
-                showToast(invData?.error || 'Stars invoice gateway unavailable');
-                setIsSubmitting(false);
-                return;
-              }
-            } catch (err) {
-              showToast('Stars gateway error. Please try again.');
-              setIsSubmitting(false);
-              return;
-            }
-          }
         };
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="relative w-full max-w-sm rounded-[24px] bg-white border border-sky-100 shadow-2xl p-5 overflow-hidden max-h-[90vh] overflow-y-auto no-scrollbar text-slate-900">
-              
-              <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[12px] font-bold tracking-wide">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <span>LIVE</span>
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-slate-900 text-[15px]">Post Bounty Campaign</h3>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
+            {/* 🌟 ২য় স্ক্রিনশটের মতো হুবহু স্কাই-ব্লু মোডাল কার্ড */}
+            <div className="relative w-full max-w-sm rounded-[32px] bg-gradient-to-b from-[#00b4f8] via-[#00a2ed] to-[#0091e0] p-5 shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto no-scrollbar text-white">
+              {/* 🌟 মোডালের ঠিক মাঝখানে ডার্ক নোটিফিকেশন বক্স */}
+              {modalError && (
+                <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none p-4 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="bg-[#2f3136]/95 backdrop-blur-md border border-white/10 text-white font-semibold text-[13px] px-5 py-3.5 rounded-[18px] shadow-2xl text-center max-w-[240px] leading-snug">
+                    {modalError}
                   </div>
                 </div>
-                <button onClick={onClose} className="p-1 rounded-full text-slate-400 hover:text-slate-600">
-                  <Icons.X className="w-5 h-5" />
+              )}
+              {/* Header: ২য় স্ক্রিনশটের মতো স্লিম ও ক্লিন হেডার */}
+              <div className="flex items-center justify-between mb-3 pb-1">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/90 text-white text-[10.5px] font-bold tracking-wider shadow-sm">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>LIVE</span>
+                  </div>
+                  <h3 className="font-display font-bold text-white text-[17.5px] tracking-normal flex items-center gap-1">
+                    <span>Post Task</span>
+                    <span>⭐</span>
+                  </h3>
+                </div>
+                <button 
+                  onClick={onClose} 
+                  className="p-1 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition active:scale-90"
+                >
+                  <Icons.X className="w-5 h-5 stroke-[2.2]" />
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-3">
+              {/* Form Body (মানানসই স্ট্যান্ডার্ড স্পেসিং) */}
+              <div className="space-y-2.5">
+                
+                {/* 1. Task Name */}
                 <div>
-                  <label className="block text-[13px] font-bold text-slate-700 mb-1">Task Title *</label>
+                  <label className="flex items-center gap-1.5 text-[12px] font-bold text-white mb-1">
+                    <span>🏷️</span>
+                    <span>Task name</span>
+                  </label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. Join Official Community Channel"
-                    className="w-full px-3 py-2 text-[13px] rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:border-sky-500 text-slate-900 font-medium"
+                    placeholder="Enter task name"
+                    className="w-full px-3.5 py-2.5 text-[13px] rounded-xl bg-white text-slate-800 placeholder:text-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-white/80 shadow-xs"
                     required
                   />
                 </div>
 
+                {/* 2. Category & Icon (প্রিমিয়াম আধুনিক আইকন সহ) */}
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[13px] font-bold text-slate-700 mb-1">Category</label>
+                    <label className="flex items-center gap-1.5 text-[11.5px] font-bold text-white mb-1">
+                      <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                      <span>Category</span>
+                    </label>
                     <select
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
-                      className="w-full px-3 py-2 text-[13px] rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:outline-none focus:border-sky-500"
+                      className="w-full px-3 py-2 text-[12.5px] rounded-xl bg-white text-slate-800 font-bold focus:outline-none shadow-xs cursor-pointer"
                     >
-                      <option value="Social" className="text-slate-900 bg-white">Social</option>
-                      <option value="Partners" className="text-slate-900 bg-white">Partners</option>
-                      <option value="Web3" className="text-slate-900 bg-white">Web3</option>
-                      <option value="Daily" className="text-slate-900 bg-white">Daily</option>
+                      <option value="Social">Social</option>
+                      <option value="Partners">Partners</option>
+                      <option value="Web3">Web3</option>
+                      <option value="Daily">Daily</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[13px] font-bold text-slate-700 mb-1">Icon</label>
+                    <label className="flex items-center gap-1.5 text-[11.5px] font-bold text-white mb-1">
+                      <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/></svg>
+                      <span>Icon Platform</span>
+                    </label>
                     <select
                       value={iconType}
                       onChange={(e) => setIconType(e.target.value)}
-                      className="w-full px-3 py-2 text-[13px] rounded-xl border border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:outline-none focus:border-sky-500"
+                      className="w-full px-3 py-2 text-[12.5px] rounded-xl bg-white text-slate-800 font-bold focus:outline-none shadow-xs cursor-pointer"
                     >
-                      <option value="telegram" className="text-slate-900 bg-white">Telegram</option>
-                      <option value="twitter" className="text-slate-900 bg-white">X / Twitter</option>
-                      <option value="youtube" className="text-slate-900 bg-white">YouTube</option>
-                      <option value="facebook" className="text-slate-900 bg-white">Facebook</option>
-                      <option value="instagram" className="text-slate-900 bg-white">Instagram</option>
-                      <option value="others" className="text-slate-900 bg-white">Others</option>
+                      <option value="telegram">Telegram</option>
+                      <option value="twitter">X / Twitter</option>
+                      <option value="youtube">YouTube</option>
+                      <option value="facebook">Facebook</option>
+                      <option value="instagram">Instagram</option>
+                      <option value="others">Others</option>
                     </select>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200">
-                  <div className="flex justify-between items-center text-[13px] font-bold mb-1">
-                    <span className="text-slate-700">Target Impressions</span>
-                    <span className="text-sky-600 tabular-nums">{impressions.toLocaleString()} Views</span>
+                {/* 3. Task Address (ভাঙ্গাছোরা মুক্ত একদম মসৃণ ইনপুট) */}
+                <div>
+                  <label className="flex items-center gap-1.5 text-[12px] font-bold text-white mb-1">
+                    <span>💳</span>
+                    <span>Task address</span>
+                  </label>
+                  <input
+                    type="url"
+                    value={actionUrl}
+                    onChange={(e) => setActionUrl(e.target.value)}
+                    placeholder="Please input task url"
+                    className="w-full px-3.5 py-2.5 text-[13px] rounded-xl bg-white text-slate-800 placeholder:text-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-white/80 shadow-xs"
+                    required
+                  />
+                </div>
+
+                {/* 4. Impressions Slider (মোটা ও ডাইনামিক স্কাই-ব্লু ফিল) */}
+                <div className="pt-1">
+                  <div className="flex justify-between items-center text-[13px] font-extrabold mb-1">
+                    <span className="flex items-center gap-1 text-white/95">
+                      <span>⠿</span>
+                      <span>Impressions</span>
+                    </span>
+                    <span className="font-display font-black text-white text-[16px] tracking-wide tabular-nums drop-shadow-xs">
+                      {impressions.toLocaleString()}
+                    </span>
                   </div>
+                  
+                  {/* মোটা প্রিমিয়াম স্লাইডার বার */}
                   <input
                     type="range"
                     min="100"
@@ -1162,100 +1265,94 @@
                     step="100"
                     value={impressions}
                     onChange={(e) => setImpressions(Number(e.target.value))}
-                    className="w-full accent-sky-500 cursor-pointer"
+                    style={{
+                      background: impressions === 100 
+                        ? 'rgba(255,255,255,0.35)' 
+                        : `linear-gradient(to right, #004e92 0%, #004e92 ${sliderPercent}%, rgba(255,255,255,0.35) ${sliderPercent}%, rgba(255,255,255,0.35) 100%)`
+                    }}
+                    className="w-full h-2.5 rounded-full appearance-none cursor-pointer accent-white shadow-inner"
                   />
+                </div>
 
-                  <div className="mt-2.5 pt-2 border-t border-slate-200 flex items-center justify-between">
-                    <div>
-                      <span className="text-[11px] text-slate-500 block mb-1 font-semibold">Payment Method:</span>
-                      <div className="flex gap-1.5">
-                        <button
-                          key="STARS"
-                          type="button"
-                          onClick={() => setCurrency('STARS')}
-                          className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
-                            currency === 'STARS' ? 'bg-amber-500 text-white shadow-xs' : 'bg-white text-slate-700 border border-slate-300'
-                          }`}
-                        >
-                          ⭐️ Stars
-                        </button>
-                        <button
-                          key="GRAM"
-                          type="button"
-                          onClick={() => setCurrency('GRAM')}
-                          className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
-                            currency === 'GRAM' ? 'bg-sky-500 text-white shadow-xs' : 'bg-white text-slate-700 border border-slate-300'
-                          }`}
-                        >
-                          $GRAM
-                        </button>
-                        <button
-                          key="PTS"
-                          type="button"
-                          onClick={() => setCurrency('PTS')}
-                          className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition ${
-                            currency === 'PTS' ? 'bg-emerald-500 text-white shadow-xs' : 'bg-white text-slate-700 border border-slate-300'
-                          }`}
-                        >
-                          Free PTS
-                        </button>
+                
+                  
+                  {/* 🌟 রেফারেন্স অ্যাপের হুবহু কালার ও বড় সংখ্যার ৩টি বাটন */}
+                <div className="pt-2 space-y-2 select-none">
+                  
+                  {/* Row 1: GRAM & STARS Buttons */}
+                  <div className="grid grid-cols-2 gap-2">
+                    
+                    {/* বাটন ১: Post Task ($GRAM - রেফারেন্স অ্যাপের আসল #1c82f9 ব্লু) */}
+                    <button
+                      type="button"
+                      onClick={() => handleExecutePayment('GRAM')}
+                      disabled={isSubmitting}
+                      className="py-2.5 px-2 rounded-[20px] bg-[#1c82f9] hover:bg-[#166ed4] active:scale-95 text-white flex flex-col items-center justify-center shadow-md transition-all cursor-pointer border border-white/20 disabled:opacity-50"
+                    >
+                      <span className="text-[11.5px] font-semibold text-white/90 leading-tight">Post Task</span>
+                      <div className="flex items-center justify-center gap-1 mt-1 leading-none">
+                        <span className="font-display font-black text-[15px] text-white tracking-wide">
+                          ≈{pricing.gramCurrent}
+                        </span>
+                        <span className="text-[13px]">💎</span>
+                        {pricing.gramOld > pricing.gramCurrent && (
+                          <span className="line-through text-white/60 text-[10.5px] font-medium ml-0.5">
+                            ≈{pricing.gramOld}
+                          </span>
+                        )}
                       </div>
-                    </div>
+                    </button>
 
-                    <div className="text-right">
-                      <span className="text-[11px] text-emerald-600 font-bold block">Cost</span>
-                      
-<span className="font-display font-extrabold text-[12px] whitespace-nowrap text-slate-900 block">{calcDisplayPrice()}</span>
-                    </div>
+                    {/* বাটন ২: Post Task (STARS - খাঁটি সাদা ব্যাকগ্রাউন্ড ও #1c82f9 ব্লু টেক্সট) */}
+                    <button
+                      type="button"
+                      onClick={() => handleExecutePayment('STARS')}
+                      disabled={isSubmitting}
+                      className="py-2.5 px-2 rounded-[20px] bg-white hover:bg-slate-50 active:scale-95 text-[#1c82f9] flex flex-col items-center justify-center shadow-md transition-all cursor-pointer border border-blue-100 disabled:opacity-50"
+                    >
+                      <span className="text-[11.5px] font-semibold text-[#1c82f9]/90 leading-tight">Post Task</span>
+                      <div className="flex items-center justify-center gap-1 mt-1 leading-none">
+                        <span className="font-display font-black text-[15px] text-[#1c82f9] tracking-wide">
+                          ≈{pricing.starsCurrent.toLocaleString()}
+                        </span>
+                        <span className="text-[13px]">⭐</span>
+                        {pricing.starsOld > pricing.starsCurrent && (
+                          <span className="line-through text-blue-300 text-[10.5px] font-medium ml-0.5">
+                            ≈{pricing.starsOld.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+
                   </div>
 
-                  {currency === 'GRAM' && !walletAddress && (
-                    <div className="mt-2 p-2 bg-amber-50 rounded-xl border border-amber-200/80 flex items-center justify-between">
-                      <span className="text-[10.5px] text-amber-800 font-semibold">Wallet connection required</span>
-                      <button
-                        type="button"
-                        onClick={() => window.tonConnectUIInstance?.openModal()}
-                        className="px-2 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded-md"
-                      >
-                        Connect
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  {/* বাটন ৩: Pay with Points (রেফারেন্সের মতো ফ্রস্টেড পিল বাটন + লাইভ পয়েন্ট সংখ্যা) */}
+                  <button
+                    type="button"
+                    onClick={() => handleExecutePayment('PTS')}
+                    disabled={isSubmitting}
+                    className="w-full py-2.5 px-4 rounded-full bg-white/15 hover:bg-white/25 active:scale-98 text-white text-[13.5px] border border-white/40 shadow-xs flex items-center justify-center gap-1 transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    <span className="font-semibold">{isSubmitting ? 'Processing...' : 'Pay with Points'}</span>
+                    {!isSubmitting && (
+                      <span className="font-display font-black tracking-wide">
+                        (≈{pricing.ptsCost.toLocaleString()} Pts)
+                      </span>
+                    )}
+                  </button>
 
-                <div>
-                  <label className="block text-[13px] font-bold text-slate-700 mb-1">Target Link / URL</label>
-                  <input
-                    type="url"
-                    value={actionUrl}
-                    onChange={(e) => setActionUrl(e.target.value)}
-                    placeholder="e.g. https://t.me/ToBOOST_Ai"
-                    className="w-full px-3 py-2 text-[13px] rounded-xl border border-slate-300 bg-slate-50 focus:bg-white text-slate-900 font-medium"
-                    required
-                  />
                 </div>
+              </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3 bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-[13px] rounded-xl shadow-md active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
-                >
-                  <Icons.Send className="w-4 h-4" />
-                  <span>
-                    {isSubmitting
-                      ? 'Processing Payment...'
-                      : currency === 'STARS'
-                      ? `Confirm & Pay with Stars (${calcDisplayPrice()})`
-                      : currency === 'GRAM'
-                      ? `Pay & Publish with $GRAM (${calcDisplayPrice()})`
-                      : `Boost for Free (${calcDisplayPrice()})`}
-                  </span>
-                </button>
-              </form>
             </div>
           </div>
         );
       };
+
+        
+                                      
+
+        
 
       const LevelPerksModal = ({ isOpen, onClose, userLevel, currentInvites, requiredInvites, multiplier }) => {
         if (!isOpen) return null;
@@ -1608,6 +1705,38 @@ const SettingsModal = ({ isOpen, onClose, username }) => {
                 )}
               </div>
 
+            </div>
+          </div>
+        );
+      };
+      /* 🌟 ২য় স্ক্রিনশটের মতো প্রফেশনাল Ad Limit Modal */
+      const AdLimitModal = ({ isOpen, onClose, onExploreTasks }) => {
+        if (!isOpen) return null;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in">
+            <div className="relative w-full max-w-sm rounded-[24px] bg-white border border-sky-200 shadow-2xl p-5 text-center">
+              <div className="w-12 h-12 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+                <Icons.PlayCircle className="w-6 h-6 stroke-sky-600" />
+              </div>
+              <h3 className="font-display font-black text-slate-900 text-base mb-1">
+                Daily Ad Limit Reached!
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                You have watched all <strong className="text-slate-800">10 sponsor ads</strong> available for today.
+                <br /><br />
+                <span className="text-sky-600 font-bold">Limit resets daily at 00:00 UTC. Complete bounty tasks to earn more PX!</span>
+              </p>
+              <div className="flex gap-2">
+                <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition cursor-pointer">
+                  Close
+                </button>
+                <button
+                  onClick={() => { onClose(); onExploreTasks && onExploreTasks(); }}
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 text-white text-xs font-bold shadow-md transition cursor-pointer"
+                >
+                  Explore Tasks
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -2184,10 +2313,10 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
       class ErrorBoundary extends Component {
         constructor(props) {
           super(props);
-          this.state = { hasError: false };
+          this.state = { hasError: false, errorInfo: null };
         }
         static getDerivedStateFromError(error) {
-          return { hasError: true };
+          return { hasError: true, errorInfo: error };
         }
         componentDidCatch(error, errorInfo) {
           console.error('Captured React Error:', error, errorInfo);
@@ -2200,10 +2329,18 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
                   <span className="text-2xl">💎</span>
                 </div>
                 <h2 className="text-sm font-extrabold text-slate-900 mb-1">ToBOOSTAi Reconnecting</h2>
-                <p className="text-[11px] text-slate-500 mb-3 max-w-xs">Returning to your mission dashboard...</p>
+                <p className="text-[11px] text-slate-500 mb-2 max-w-xs">Returning to your mission dashboard...</p>
+                
+                {/* 🌟 আসল এরর মেসেজ সরাসরি স্ক্রিনে দেখার লাল বক্স */}
+                {this.state.errorInfo && (
+                  <div className="p-3 bg-red-100 border border-red-300 text-red-700 text-[11px] rounded-xl font-mono mb-3 max-w-xs break-all text-left select-all">
+                    {String(this.state.errorInfo?.message || this.state.errorInfo)}
+                  </div>
+                )}
+
                 <button
                   onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
-                  className="px-5 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-xs rounded-full shadow-xs active:scale-95"
+                  className="px-5 py-2 bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-xs rounded-full shadow-xs active:scale-95 cursor-pointer"
                 >
                   Refresh Dashboard
                 </button>
@@ -2254,6 +2391,7 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
         const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
         const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
         const [isTaskLimitModalOpen, setIsTaskLimitModalOpen] = useState(false);
+        const [isAdLimitModalOpen, setIsAdLimitModalOpen] = useState(false);
         const [withdrawAlertData, setWithdrawAlertData] = useState(null);
         const [isAdLoading, setIsAdLoading] = useState(false);
         const [statusToast, setStatusToast] = useState('');
@@ -2407,7 +2545,7 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
           if (isAdLoading) return;
 
           if (stats.adsWatchedToday >= 10) {
-            showToast('⚠️ Daily limit of 10 sponsor ads reached! Resets at 00:00 UTC.');
+            setIsAdLimitModalOpen(true);
             return;
           }
 
@@ -2522,14 +2660,27 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
           }
         };
 
+        const [isAnyTaskVerifying, setIsAnyTaskVerifying] = useState(false);
+
         const handleStartTask = async (taskId, url) => {
+          // ১. দৈনিক লিমিট পূরণ হলে মোডাল দেখানো
           if (stats.completedTasksToday >= dailyTaskLimit) {
             setIsTaskLimitModalOpen(true);
             return;
           }
 
+          // ২. অলরেডি একটি টাস্ক লোডিং থাকলে অন্য টাস্কে ক্লিক সম্পূর্ণ ব্লক করা
+          if (isAnyTaskVerifying) {
+            showToast('⚠️ Please wait! A task is already verifying.');
+            return;
+          }
+
+          // ৩. সিঙ্গেল টাস্ক লক চালু করা
+          setIsAnyTaskVerifying(true);
+
           openSafeLink(url || 'https://t.me/ToBOOST_Ai');
 
+          // শুধুমাত্র এই একটি টাস্ককে চেকিং স্টেটে নেওয়া
           setTasks((prev) =>
             prev.map((t) => (t.id === taskId ? { ...t, status: 'verifying' } : t))
           );
@@ -2558,21 +2709,29 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
                 setStats((p) => ({ ...p, completedTasksToday: newCount }));
                 saveStoredDailyTaskData(currentUserId, newCount, updatedList);
 
-                showToast('🎉 Task completed! +200 PTS');
+                showToast('🎉 Task completed! +200 PX');
                 if (typeof confetti === 'function') {
                   try { confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } }); } catch (e) {}
                 }
+
+                // যদি ৫টি পূর্ণ হয়ে যায় সাথে সাথে লিমিট মোডাল দেখানো
+                if (newCount >= dailyTaskLimit) {
+                  setTimeout(() => setIsTaskLimitModalOpen(true), 1200);
+                }
               } else {
-                const updatedList = completedTasksList.includes(taskId) ? completedTasksList : [...completedTasksList, taskId];
-                setCompletedTasksList(updatedList);
-                saveStoredDailyTaskData(currentUserId, stats.completedTasksToday, updatedList);
-                showToast(data.message || 'Task already completed!');
+                showToast(data.error || data.message || 'Task failed or limit reached!');
+                setTasks((prev) =>
+                  prev.map((t) => (t.id === taskId ? { ...t, status: 'active' } : t))
+                );
               }
             } catch (err) {
               setTasks((prev) =>
                 prev.map((t) => (t.id === taskId ? { ...t, status: 'active' } : t))
               );
               showToast('Network error while completing task.');
+            } finally {
+              // যাচাই শেষ বা এরর হলে লক মুক্ত করা
+              setIsAnyTaskVerifying(false);
             }
           }, 3000);
         };
@@ -2814,6 +2973,14 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
               dailyLimit={dailyTaskLimit}
               invites={stats.currentInvites}
               onGoToFrens={() => setActiveTab('frens')}
+            />
+            <AdLimitModal
+              isOpen={isAdLimitModalOpen}
+              onClose={() => setIsAdLimitModalOpen(false)}
+              onExploreTasks={() => {
+                const el = document.getElementById('bounty-scroll-container');
+                if (el) el.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             />
 
             <WithdrawAlertModal
