@@ -17,7 +17,8 @@
     <meta name="twitter:title" content="ToBOOSTAi - Official Web3 App" />
     <meta name="twitter:description" content="Boost your social media & complete bounties! Earn Star PTS and win $GRAM tokens." />
     <meta name="twitter:image" content="https://i.postimg.cc/05HmbvhS/82996.png" />
-
+<!-- ⚡ Preload 3D Star Icon (হোম পেজেই ইনস্ট্যান্ট ক্যাশ লোড) -->
+    <link rel="preload" as="image" href="https://i.postimg.cc/wTTNz0NK/85796-removebg-preview-(2).png" />
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
@@ -770,7 +771,7 @@
                   </div>
                   <div className="mt-1 space-y-0.5">
                     <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-500" style={{ width: `${invitePercentage}%` }} />
+                      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-[width] duration-500 ease-out" style={{ width: `${invitePercentage || 0}%` }} />
                     </div>
                     <div className="flex justify-between items-center text-[10px] text-slate-500 font-medium">
                       <span>Perks</span>
@@ -797,7 +798,7 @@
                   </div>
                   <div className="mt-1 space-y-0.5">
                     <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                      <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${taskPercentage}%` }} />
+                      <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-full rounded-full" style={{ width: `${taskPercentage || 0}%` }} />
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium">
                       <span>200 PX/task</span>
@@ -1159,9 +1160,9 @@
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     <span>LIVE</span>
                   </div>
-                  <h3 className="font-display font-bold text-white text-[17.5px] tracking-normal flex items-center gap-1">
+                  <h3 className="font-display font-bold text-white text-[17.5px] tracking-normal flex items-center gap-1.5">
                     <span>Post Task</span>
-                    <span>⭐</span>
+                    <img src="https://i.postimg.cc/wTTNz0NK/85796-removebg-preview-(2).png" alt="Telegram Star" className="w-[25px] h-[25px] object-contain inline-block drop-shadow-md -mt-0.5" />
                   </h3>
                 </div>
                 <button 
@@ -1252,7 +1253,7 @@
                       <span>⠿</span>
                       <span>Impressions</span>
                     </span>
-                    <span className="font-display font-black text-white text-[16px] tracking-wide tabular-nums drop-shadow-xs">
+                    <span className="font-display font-black text-white text-[15.5px] tracking-wider tabular-nums drop-shadow-xs">
                       {impressions.toLocaleString()}
                     </span>
                   </div>
@@ -1291,7 +1292,7 @@
                     >
                       <span className="text-[11.5px] font-semibold text-white/90 leading-tight">Post Task</span>
                       <div className="flex items-center justify-center gap-1 mt-1 leading-none">
-                        <span className="font-display font-black text-[15px] text-white tracking-wide">
+                        <span className="font-display font-black text-[14.5px] text-white tracking-wide">
                           ≈{pricing.gramCurrent}
                         </span>
                         <span className="text-[13px]">💎</span>
@@ -1312,10 +1313,10 @@
                     >
                       <span className="text-[11.5px] font-semibold text-[#1c82f9]/90 leading-tight">Post Task</span>
                       <div className="flex items-center justify-center gap-1 mt-1 leading-none">
-                        <span className="font-display font-black text-[15px] text-[#1c82f9] tracking-wide">
+                        <span className="font-display font-black text-[14.5px] text-[#1c82f9] tracking-wide">
                           ≈{pricing.starsCurrent.toLocaleString()}
                         </span>
-                        <span className="text-[13px]">⭐</span>
+                        <img src="https://i.postimg.cc/wTTNz0NK/85796-removebg-preview-(2).png" alt="Star" className="w-[24px] h-[24px] object-contain inline-block -mt-0.5" />
                         {pricing.starsOld > pricing.starsCurrent && (
                           <span className="line-through text-blue-300 text-[10.5px] font-medium ml-0.5">
                             ≈{pricing.starsOld.toLocaleString()}
@@ -1336,7 +1337,7 @@
                     <span className="font-semibold">{isSubmitting ? 'Processing...' : 'Pay with Points'}</span>
                     {!isSubmitting && (
                       <span className="font-display font-black tracking-wide">
-                        (≈{pricing.ptsCost.toLocaleString()} Pts)
+                        (≈{pricing.ptsCost.toLocaleString()} PX)
                       </span>
                     )}
                   </button>
@@ -2719,7 +2720,12 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
                   setTimeout(() => setIsTaskLimitModalOpen(true), 1200);
                 }
               } else {
-                showToast(data.error || data.message || 'Task failed or limit reached!');
+                if (data.limitReached || String(data.error || '').includes('Daily limit')) {
+                  setStats((p) => ({ ...p, completedTasksToday: dailyTaskLimit }));
+                  setIsTaskLimitModalOpen(true);
+                } else {
+                  showToast(data.error || data.message || 'Task already completed!');
+                }
                 setTasks((prev) =>
                   prev.map((t) => (t.id === taskId ? { ...t, status: 'active' } : t))
                 );
