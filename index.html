@@ -10,7 +10,7 @@
 
 <!-- 🌟 Open Graph / Telegram Banner Meta Tags 🌟 -->
     <meta property="og:title" content="ToBOOSTAi - Official Web3 App" />
-    <meta property="og:description" content="Boost your social media & complete bounties! Earn Star PTS and win $GRAM tokens." />
+    <meta property="og:description" content="Boost your social media & complete bounties! Earn Star PX and win $GRAM tokens." />
     <meta property="og:image" content="https://i.postimg.cc/05HmbvhS/82996.png" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -700,22 +700,29 @@
         onInviteClick,
         onTasksClick,
         dict,
+        stats = {}, // 🌟 সার্ভার স্টেট রিসিভ করার প্রপস
       }) => {
-        const invitePercentage = Math.min(100, Math.round((currentInvites / requiredInvites) * 100));
-        const taskPercentage = Math.min(100, Math.round((completedTasksToday / dailyTaskLimit) * 100));
+        // 🌟 সার্ভার থেকে আসলে সার্ভারের পার্সেন্টেজ, না হলে লোকাল ব্যাকআপ
+        const invitePercentage = stats?.invitePercentage !== undefined 
+          ? stats.invitePercentage 
+          : Math.min(100, Math.round((currentInvites / requiredInvites) * 100));
+          
+        const taskPercentage = stats?.taskPercentage !== undefined 
+          ? stats.taskPercentage 
+          : Math.min(100, Math.round((completedTasksToday / dailyTaskLimit) * 100));
 
         return (
           <div className="w-full">
             <div className="grid grid-cols-2 gap-2">
               
-              {/* Watch Ad */}
+              {/* Card 1: Watch Ad */}
               <div onClick={onWatchAdClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[16px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[82px]">
                 <div className="flex items-center justify-between gap-1.5">
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-400 to-blue-500 flex items-center justify-center text-white shadow-xs shrink-0">
                     <Icons.PlayCircle className="w-4 h-4 stroke-white" />
                   </div>
                   <div className="inline-flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-gradient-to-r from-sky-50 to-blue-50/90 border border-sky-200/90 text-sky-800 text-[12px] font-black tracking-tight shadow-2xs tabular-nums shrink-0">
-                    <Coin3DIcon size={18} idPrefix="ad-reward" />
+                    <Coin3DIcon size={22} idPrefix="ad-reward" />
                     <span>+{adReward} PX</span>
                   </div>
                 </div>
@@ -730,14 +737,14 @@
                 </div>
               </div>
 
-              {/* Daily Check-in */}
+              {/* Card 2: Daily Check-in */}
               <div onClick={onCheckInClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[16px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[82px]">
                 <div className="flex items-center justify-between gap-1.5">
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-xs shrink-0">
                     <Icons.CalendarCheck className="w-4 h-4" />
                   </div>
                   <div className="inline-flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full bg-gradient-to-r from-sky-50 to-blue-50/90 border border-sky-200/90 text-sky-800 text-[12px] font-black tracking-tight shadow-2xs tabular-nums shrink-0">
-                    <Coin3DIcon size={18} idPrefix="checkin-reward" />
+                    <Coin3DIcon size={22} idPrefix="checkin-reward" />
                     <span>+{checkInReward} PX</span>
                   </div>
                 </div>
@@ -754,34 +761,63 @@
                 </div>
               </div>
 
-              {/* Referral & Level */}
-              <div onClick={onInviteClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[16px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[82px]">
-                <div className="flex items-center justify-between">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-xs shrink-0">
-                    <Icons.Users className="w-4 h-4" />
-                  </div>
-                  <span className="text-[10.5px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200/70 tabular-nums">
-                    Lv.{userLevel}
+              {/* 🌟 3. Referral & Level Card (রেফারেন্স স্ক্রিনশটের হুবহু দূরত্ব, ফন্ট ও বড় তীর চিহ্ন) */}
+              <div onClick={onInviteClick} role="button" className="group relative flex flex-col justify-between pl-3 pr-2 pt-2.5 pb-2 rounded-[16px] bg-[radial-gradient(circle_at_28.5px_2.5px,transparent_22px,#ffffff_28px)] border border-sky-100/90 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-visible min-h-[82px]"> 
+                
+                {/* কোণায় ফিট করা ট্রান্সপারেন্ট র্যাংক ব্যাজ */}
+                <div className="absolute -top-3.5 left-1 z-20 pointer-events-none drop-shadow-xs">
+                  <img 
+                    src="https://i.postimg.cc/gkd3CHrZ/87243-removebg-preview.png" 
+                    alt="Rank Badge" 
+                    className="w-[50px] h-[50px] object-contain transition-transform group-hover:scale-105"
+                  />
+                </div>
+
+                {/* ডানপাশের Lv.X এবং পরবর্তীতে বাটন হিসেবে ব্যবহারের উপযোগী বড় তীর চিহ্ন (ডান বর্ডার থেকে একদম পারফেক্ট ৮px দূরত্বে) */}
+                <div className="flex items-center justify-end gap-1 w-full">
+                  <span className="font-serif font-black text-slate-950 text-[19px] tracking-tight leading-none [-webkit-text-stroke:0.5px_currentColor]">Lv.{userLevel}</span>
+                  <span className="font-black text-slate-900 text-[20px] leading-none transition-transform group-hover:translate-x-0.5 select-none">
+                    »
                   </span>
                 </div>
-                <div className="mt-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-display font-bold text-slate-800 text-[12px] group-hover:text-indigo-600 transition-colors leading-tight">{dict.referralLevel}</h3>
-                    <span className="text-[11px] font-black text-indigo-600">+100 PX</span>
-                  </div>
-                  <div className="mt-1 space-y-0.5">
-                    <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-[width] duration-500 ease-out" style={{ width: `${invitePercentage || 0}%` }} />
-                    </div>
-                    <div className="flex justify-between items-center text-[10px] text-slate-500 font-medium">
-                      <span>Perks</span>
-                      <span className="font-semibold text-slate-700 tabular-nums">{currentInvites}/{requiredInvites} frens</span>
-                    </div>
-                  </div>
+
+                {/* Invitation Progress শিরোনাম ও সাবটাইটেল (ডান বর্ডারের কাছাকাছি পারফেক্ট অ্যালাইন) */}
+                <div className="mt-0.5 text-right">
+                  <h4 className="font-sans font-extrabold text-slate-600 text-[14px] tracking-tight leading-tight">Invitation Progress</h4>
+                  <p className="text-[9.5px] text-slate-400 font-medium leading-none mt-1">
+                    invite {Math.max(0, requiredInvites - currentInvites)} users to upgrade to Lv.{userLevel + 1}
+                  </p>
                 </div>
+
+                {/* বামদিকের বর্ডারের একদম কাছাকাছি থেকে শুরু হওয়া স্লাইডার ও ডানপ্রান্তের ইনভাইট বাটন */}
+                <div className="flex items-center w-full mt-auto pt-1">
+                  {/* বাম বর্ডারের কাছে শুরু হওয়া চিকন স্লাইডার ট্র্যাক */}
+                  <div className="flex-1 h-[9px] bg-[#e1f2fe] rounded-full relative overflow-hidden shadow-inner flex items-center">
+                    {/* স্লাইডারের নীল প্রগ্রেস ফিল */}
+                    <div 
+                      className="bg-sky-500 h-full rounded-full transition-all duration-300" 
+                      style={{ width: `${stats?.invitePercentage !== undefined ? stats.invitePercentage : invitePercentage}%` }} 
+                    />
+                    {/* 🌟 রেফারেন্স স্ক্রিনশটের হুবহু ফন্টে থাকা কাউন্ট (যেমন 15/5 বা 2/3) */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none pr-3">
+                      <span className="font-sans font-extrabold text-[8.5px] text-slate-800 leading-none tabular-nums select-none tracking-tight">
+                        {currentInvites}/{requiredInvites}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* স্লাইডারের ডানপ্রান্তে ওভারল্যাপ হওয়া ইনভাইট বাটন (ডান বর্ডারের সীমানায় ফিট) */}
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); onInviteClick(); }}
+                    className="-ml-3 z-10 px-3.5 py-1 bg-sky-500 hover:bg-sky-600 active:scale-95 text-white rounded-full text-[11px] font-black shadow-sm transition-all cursor-pointer shrink-0"
+                  >
+                    invite
+                  </button>
+                </div>
+
               </div>
 
-              {/* Daily Tasks */}
+              {/* Card 4: Daily Tasks */}
               <div onClick={onTasksClick} role="button" className="group relative flex flex-col justify-between p-2.5 rounded-[16px] bg-white border border-sky-100 shadow-[0_2px_8px_rgba(56,189,248,0.06)] active:scale-[0.98] transition-all cursor-pointer overflow-hidden min-h-[82px]">
                 <div className="flex items-center justify-between">
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center text-white shadow-xs shrink-0">
@@ -798,7 +834,7 @@
                   </div>
                   <div className="mt-1 space-y-0.5">
                     <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                      <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-full rounded-full" style={{ width: `${taskPercentage || 0}%` }} />
+                      <div className="bg-gradient-to-r from-teal-400 to-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${taskPercentage}%` }} />
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium">
                       <span>200 PX/task</span>
@@ -2863,6 +2899,7 @@ const WalletView = ({ starBalance, walletAddress, streakDays, adsWatchedToday, s
                         if (el) el.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       dict={dict}
+                      stats={stats}
                     />
                   </div>
 
